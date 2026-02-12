@@ -1,0 +1,106 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: #FAFAFA;
+    --foreground: #1A1A2E;
+  }
+
+  .dark {
+    --background: #0F0C29;
+    --foreground: #F3F4F6;
+  }
+
+  * {
+    @apply border-light-border;
+  }
+
+  body {
+    @apply bg-light-background text-light-text transition-colors duration-300;
+  }
+
+  html.dark body {
+    @apply bg-dark-background text-dark-text;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
+}
+
+@layer components {
+  /* Glass morphism effect */
+  .glass {
+    @apply bg-light-surface/80 backdrop-blur-lg border border-light-border/50;
+  }
+
+  html.dark .glass {
+    @apply bg-dark-surface/80 border-dark-border/50;
+  }
+
+  /* Gradient text */
+  .gradient-text {
+    @apply bg-gradient-to-r from-light-primary to-light-secondary bg-clip-text text-transparent;
+  }
+
+  /* Section styling */
+  .section {
+    @apply py-16 md:py-24 lg:py-32;
+  }
+
+  /* Container */
+  .container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+}
+
+@layer utilities {
+  /* Hide scrollbar but keep functionality */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Selection color */
+  ::selection {
+    @apply bg-light-primary/30 text-light-text;
+  }
+
+  html.dark ::selection {
+    @apply bg-dark-primary/30 text-dark-text;
+  }
+}
+
+/* Animation for page transitions */
+.page-transition-enter {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.page-transition-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 300ms ease-out, transform 300ms ease-out;
+}
+
+.page-transition-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.page-transition-exit-active {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 200ms ease-in, transform 200ms ease-in;
+}
