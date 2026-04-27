@@ -6,6 +6,7 @@ import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 import { ToastProvider } from "@/components/ui/Toast";
+import { AgentationWrapper } from "@/components/AgentationWrapper";
 
 const notoSerifSC = Noto_Serif_SC({
   weight: ['400', '600', '700'],
@@ -49,9 +50,10 @@ export default function RootLayout({
           <ErrorBoundary>
             <ToastProvider>
               <Header />
-              <main className="flex-1">
+              <main className="flex-1" style={{ position: 'relative', zIndex: 1 }}>
                 {children}
               </main>
+              <AgentationWrapper />
             </ToastProvider>
           </ErrorBoundary>
         </SessionProvider>
