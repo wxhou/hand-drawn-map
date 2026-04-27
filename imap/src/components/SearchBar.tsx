@@ -33,14 +33,16 @@ export function SearchBar({
     <div className="relative max-w-xl mx-auto">
       <motion.div
         animate={{ boxShadow: focused
-          ? '0 0 0 2px rgba(178,69,146,0.35), 0 8px 32px rgba(0,0,0,0.4)'
-          : '0 4px 16px rgba(0,0,0,0.2)'
+          ? '0 0 0 2px rgba(178,69,146,0.4), 0 12px 40px rgba(0,0,0,0.5), 0 0 60px rgba(178,69,146,0.15)'
+          : '0 4px 20px rgba(0,0,0,0.3)'
         }}
-        transition={{ duration: 0.2 }}
+        transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
         className="relative flex items-center rounded-2xl overflow-hidden"
         style={{
-          backgroundColor: 'var(--bg-secondary)',
-          border: focused ? '1.5px solid rgba(178,69,146,0.5)' : '1.5px solid var(--border)',
+          backgroundColor: 'rgba(19, 19, 26, 0.8)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+          border: focused ? '1.5px solid rgba(178,69,146,0.6)' : '1.5px solid var(--border)',
         }}
       >
         <Search

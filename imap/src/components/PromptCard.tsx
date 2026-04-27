@@ -28,22 +28,24 @@ export function PromptCard({ prompt, index, onClick }: PromptCardProps) {
       transition={{ delay: index * 0.05, duration: 0.4 }}
       className="group cursor-pointer"
       style={{
-        backgroundColor: 'var(--bg-secondary)',
+        backgroundColor: 'rgba(19, 19, 26, 0.7)',
         borderRadius: 20,
         border: '1px solid var(--border)',
         overflow: 'hidden',
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
-        transition: 'box-shadow 0.3s ease, border-color 0.3s ease, transform 0.3s ease',
+        backdropFilter: 'blur(16px)',
+        WebkitBackdropFilter: 'blur(16px)',
+        transition: 'box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
       }}
       onMouseEnter={(e) => {
-        (e.currentTarget as HTMLElement).style.transform = 'translateY(-6px)';
-        (e.currentTarget as HTMLElement).style.boxShadow = '0 20px 48px rgba(0,0,0,0.5)';
-        (e.currentTarget as HTMLElement).style.borderColor = 'rgba(178,69,146,0.4)';
+        (e.currentTarget as HTMLElement).style.transform = 'translateY(-8px) scale(1.02)';
+        (e.currentTarget as HTMLElement).style.boxShadow = '0 24px 48px rgba(0,0,0,0.4), 0 0 40px rgba(178,69,146,0.12)';
+        (e.currentTarget as HTMLElement).style.borderColor = 'rgba(178,69,146,0.5)';
       }}
       onMouseLeave={(e) => {
-        (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
+        (e.currentTarget as HTMLElement).style.transform = 'translateY(0) scale(1)';
         (e.currentTarget as HTMLElement).style.boxShadow = 'none';
         (e.currentTarget as HTMLElement).style.borderColor = 'var(--border)';
       }}
@@ -58,7 +60,7 @@ export function PromptCard({ prompt, index, onClick }: PromptCardProps) {
           <img
             src={prompt.imageUrl}
             alt={prompt.title}
-            className="w-full object-cover"
+            className="w-full object-cover transition-transform duration-500 group-hover:scale-105"
             style={{ display: 'block', aspectRatio: '16/10', width: '100%' }}
             loading="lazy"
           />

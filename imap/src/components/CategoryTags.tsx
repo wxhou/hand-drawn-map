@@ -16,14 +16,14 @@ import {
 } from 'lucide-react';
 
 const CATEGORIES = [
-  { name: '全部', icon: LayoutGrid },
-  { name: '个人资料 / 头像', icon: User },
-  { name: '社交媒体帖子', icon: Share2 },
-  { name: '信息图 / 教育视觉图', icon: BarChart3 },
-  { name: 'YouTube 缩略图', icon: Youtube },
-  { name: '漫画 / 故事板', icon: BookOpen },
-  { name: '海报 / 传单', icon: FileText },
-  { name: 'APP / 网页设计', icon: Monitor },
+  { name: '全部', icon: LayoutGrid, hue: '0' },
+  { name: '个人资料 / 头像', icon: User, hue: '330' },
+  { name: '社交媒体帖子', icon: Share2, hue: '260' },
+  { name: '信息图 / 教育视觉图', icon: BarChart3, hue: '200' },
+  { name: 'YouTube 缩略图', icon: Youtube, hue: '0' },
+  { name: '漫画 / 故事板', icon: BookOpen, hue: '280' },
+  { name: '海报 / 传单', icon: FileText, hue: '30' },
+  { name: 'APP / 网页设计', icon: Monitor, hue: '170' },
 ];
 
 interface CategoryTagsProps {
@@ -51,11 +51,14 @@ export function CategoryTags({ activeCategory, onSelect, showAll = true }: Categ
             transition={{ delay: index * 0.03, duration: 0.2 }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200"
+            className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300"
             style={{
-              backgroundColor: isActive ? 'var(--accent-gradient)' : 'var(--bg-tertiary)',
+              backgroundColor: isActive
+                ? 'var(--accent-gradient)'
+                : `hsla(${cat.hue}, 40%, 15%, 0.6)`,
               color: isActive ? 'white' : 'var(--text-secondary)',
-              border: isActive ? 'none' : '1px solid var(--border)',
+              border: isActive ? 'none' : `1px solid hsla(${cat.hue}, 30%, 40%, 0.2)`,
+              backdropFilter: isActive ? 'none' : 'blur(8px)',
             }}
           >
             <Icon
