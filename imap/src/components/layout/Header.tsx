@@ -1,48 +1,85 @@
 'use client';
 
 import Link from 'next/link';
-import { ThemeToggle } from '@/components/ui/ThemeToggle';
-import { Sparkles } from 'lucide-react';
+import { useSession, signOut } from 'next-auth/react';
+import { Sparkles, Upload } from 'lucide-react';
 
 export function Header() {
+  const { data: session, status } = useSession();
+
+  if (status === 'loading') {
+    return null;
+  }
+
+  const user = session?.user;
+
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-light-background/80 backdrop-blur-lg border-b border-light-border/50">
-      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
+    <header
+      className="fixed top-0 left-0 right-0 z-50 border-b"
+      style={{ backgroundColor: 'rgba(10, 10, 15, 0.85)', borderColor: 'var(--border)', backdropFilter: 'blur(12px)' }}
+    >
+      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 group">
-          <div className="p-2 rounded-xl bg-gradient-to-br from-light-primary to-light-secondary shadow-lg shadow-light-primary/25 group-hover:shadow-xl group-hover:scale-105 transition-all duration-300">
+        <Link href="/" className="flex items-center gap-2.5 group">
+          <div
+            className="p-2 rounded-xl group-hover:scale-105 transition-all duration-300"
+            style={{ background: 'var(--accent-gradient)' }}
+          >
             <Sparkles className="h-5 w-5 text-white" />
           </div>
-          <span className="text-xl font-bold bg-gradient-to-r from-light-primary to-light-secondary bg-clip-text text-transparent">
-            手绘地图
+          <span className="text-xl font-bold">
+            <span className="gradient-text">GPT Image 2</span>
+            <span style={{ color: 'var(--text-secondary)', marginLeft: 6 }}>Prompts</span>
           </span>
         </Link>
 
         {/* Navigation */}
-        <nav className="hidden md:flex items-center gap-6">
+        <nav className="hidden md:flex items-center gap-8">
+          <Link
+            href="/"
+            className="text-sm font-medium transition-colors duration-200 hover:text-white"
+            style={{ color: 'var(--text-secondary)' }}
+          >
+            首页
+          </Link>
           <Link
             href="/gallery"
-            className="text-light-text-secondary hover:text-light-text transition-colors duration-200"
+            className="text-sm font-medium transition-colors duration-200 hover:text-white"
+            style={{ color: 'var(--text-secondary)' }}
           >
             画廊
           </Link>
           <Link
-            href="/templates"
-            className="text-light-text-secondary hover:text-light-text transition-colors duration-200"
+            href="/submit"
+            className="text-sm font-medium transition-colors duration-200 hover:text-white"
+            style={{ color: 'var(--text-secondary)' }}
           >
-            模板
-          </Link>
-          <Link
-            href="/about"
-            className="text-light-text-secondary hover:text-light-text transition-colors duration-200"
-          >
-            关于
+            提交
           </Link>
         </nav>
 
         {/* Actions */}
         <div className="flex items-center gap-3">
-          <ThemeToggle />
+          <Link href="/submit">
+            <button className="btn-primary text-sm py-2 px-5">
+              <Upload className="w-4 h-4" />
+              提交 Prompt
+            </button>
+          </Link>
+          {user ? (
+            <button
+              onClick={() => signOut({ callbackUrl: '/' })}
+              className="btn-secondary text-sm py-2 px-4"
+            >
+              退出
+            </button>
+          ) : (
+            <Link href="/auth/login">
+              <button className="btn-secondary text-sm py-2 px-4">
+                登录
+              </button>
+            </Link>
+          )}
         </div>
       </div>
     </header>

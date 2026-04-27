@@ -9,16 +9,32 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@auth/core": "^0.41.0",
+    "@google/generative-ai": "^0.24.1",
+    "@libsql/client": "^0.17.3",
+    "@prisma/adapter-libsql": "^7.8.0",
+    "@prisma/client": "^5.22.0",
+    "@supabase/supabase-js": "^2.97.0",
+    "@types/leaflet": "^1.9.21",
+    "@vercel/blob": "^2.3.2",
+    "bcryptjs": "^3.0.3",
+    "canvas": "^3.2.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "framer-motion": "^12.34.0",
+    "leaflet": "^1.9.4",
     "lucide-react": "^0.563.0",
     "next": "^16.1.6",
+    "next-auth": "^5.0.0-beta.30",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
+    "react-leaflet": "^5.0.0",
+    "replicate": "^1.4.0",
     "tailwind-merge": "^3.4.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
@@ -26,7 +42,7 @@
     "eslint": "^8",
     "eslint-config-next": "14.2.35",
     "postcss": "^8",
-    "prisma": "^7.3.0",
+    "prisma": "^5.22.0",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
   }

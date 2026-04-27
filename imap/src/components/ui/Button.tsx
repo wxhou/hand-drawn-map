@@ -18,6 +18,12 @@ const buttonVariants = cva(
         ghost: 'hover:bg-light-background/80 text-light-text',
         destructive: 'bg-light-error text-white hover:bg-light-error/90',
         success: 'bg-light-success text-white hover:bg-light-success/90',
+        artistic:
+          'bg-[#06B6D4] text-white border-2 border-[#06B6D4] hover:bg-[#0891B2] hover:shadow-lg hover:shadow-[#06B6D4]/20 active:scale-[0.98]',
+        artisticOutline:
+          'border-2 border-[#06B6D4] text-[#06B6D4] bg-transparent hover:bg-[#06B6D4] hover:text-white',
+        gradient:
+          'bg-gradient-to-r from-[#667eea] to-[#764ba2] text-white shadow-lg shadow-[#667eea]/25 hover:shadow-xl hover:shadow-[#667eea]/30 hover:scale-[1.02] active:scale-[0.98]',
       },
       size: {
         default: 'h-12 px-6 py-2',

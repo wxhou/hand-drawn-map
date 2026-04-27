@@ -4,7 +4,7 @@ import * as React from 'react';
 import { cn } from '@/lib/utils';
 
 interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
-  variant?: 'default' | 'outlined' | 'elevated';
+  variant?: 'default' | 'outlined' | 'elevated' | 'artistic';
   selected?: boolean;
 }
 
@@ -14,6 +14,7 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
       default: 'bg-light-surface border-2 border-transparent',
       elevated: 'bg-light-surface shadow-lg shadow-light-primary/10 hover:shadow-xl',
       outlined: 'bg-light-surface border-2 border-light-border',
+      artistic: 'bg-[var(--art-bg-paper)] border-2 border-[var(--art-primary-light)]/30 card-glow',
     };
 
     return (
@@ -21,8 +22,7 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
         ref={ref}
         className={cn(
           'rounded-2xl transition-all duration-200',
-          'cursor-pointer',
-          'hover:scale-[1.02] hover:-translate-y-1',
+          variant === 'artistic' ? 'paper-lift' : 'cursor-pointer hover:scale-[1.02] hover:-translate-y-1',
           selected && 'ring-2 ring-light-primary ring-offset-2',
           variants[variant],
           className

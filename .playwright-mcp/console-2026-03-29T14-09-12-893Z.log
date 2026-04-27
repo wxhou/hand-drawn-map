@@ -1,0 +1,123 @@
+[     152ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3001/auth/register:0
+[     263ms] Error: [next]/internal/font/google/ma_shan_zheng_6bc5d4d4.module.css:335:9
+Module not found: Can't resolve '@vercel/turbopack-next/internal/font/google/font'
+  333 |   font-display: swap;
+  334 |   src: url(@vercel/turbopack-next/internal/font/google/font?{%22url%22:%22https://fonts.gstatic.com/s/mashanzheng/v17/NaPecZTRCLxvwo41b4gvzkXaRMHsCoRTJKKTqxFXqIji1hn3wSpSEA3eSpJy0awdsFt2Zfc6SSE.60.woff2%22,%22preload%22:false,%22has_size_adjust%22:true}) format('woff2');
+> 335 |   unicode-range: U+6cb1-6cb2, U+6cb4-6cb5, U+6cb7, U+6cba, U+6cbc-6cbd, U+6cc1-6cc3, U+6cc5-6cc7, U+6cd0-6cd4, U+6cd6-6cd7, U+6cd9-6cda, U+6cde-6ce0, U+6ce4, U+6ce6, U+6ce9, U+6ceb-6cef, U+6cf1-6cf2, U+6cf6-6cf7, U+6cfa, U+6cfe, U+6d03-6d05, U+6d07-6d08, U+6d0a, U+6d0c, U+6d0e-6d11, U+6d13-6d14, U+6d16, U+6d18-6d1a, U+6d1c, U+6d1f, U+6d22-6d23, U+6d26-6d29, U+6d2b, U+6d2e-6d30, U+6d33, U+6d35-6d36, U+6d38-6d3a, U+6d3c, U+6d3f, U+6d42-6d44, U+6d48-6d49, U+6d4d, U+6d50, U+6d52, U+6d54, U+6d56-6d58, U+6d5a-6d5c, U+6d5e, U+6d60-6d61, U+6d63-6d65, U+6d67, U+6d6c-6d6d, U+6d6f, U+6d75, U+6d7b-6d7d, U+6d87, U+6d8a, U+6d8e, U+6d90-6d9a, U+6d9c-6da0, U+6da2-6da3, U+6da7, U+6daa-6dac, U+6dae, U+6db3-6db4, U+6db6, U+6db8, U+6dbc, U+6dbf, U+6dc2;
+      |         ^
+  336 | }
+  337 | @font-face {
+  338 |   font-family: 'Ma Shan Zheng';
+
+Import map: Resolved by import map
+
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/ma_shan_zheng_6bc5d4d4.module.css
+    [next]/internal/font/google/ma_shan_zheng_6bc5d4d4.js
+    ./src/app/layout.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+    at <unknown> (Error: [next]/internal/font/google/ma_shan_zheng_6bc5d4d4.module.css:335:9)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at Object.getCompilationErrors (file:///Users/wxhou/Documents/hand-drawn-map/imap/node_modules/next/dist/server/dev/hot-reloader-turbopack.js:1008:59)
+    at DevBundlerService.getCompilationError (file:///Users/wxhou/Documents/hand-drawn-map/imap/node_modules/next/dist/server/lib/dev-bundler-service.js:44:55)
+    at DevServer.getCompilationError (file:///Users/wxhou/Documents/hand-drawn-map/imap/node_modules/next/dist/server/dev/next-dev-server.js:706:42)
+    at DevServer.findPageComponents (file:///Users/wxhou/Documents/hand-drawn-map/imap/node_modules/next/dist/server/dev/next-dev-server.js:676:43)
+    at async DevServer.renderErrorToResponseImpl (file:///Users/wxhou/Documents/hand-drawn-map/imap/node_modules/next/dist/server/base-server.js:1733:26)
+[     378ms] [ERROR] [next]/internal/font/google/ma_shan_zheng_6bc5d4d4.module.css:335:9
+Module not found: Can't resolve '@vercel/turbopack-next/internal/font/google/font'
+  333 |   font-display: swap;
+  334 |   src: url(@vercel/turbopack-next/internal/font/google/font?{%22url%22:%22https://fonts.gstatic.com/s/mashanzheng/v17/NaPecZTRCLxvwo41b4gvzkXaRMHsCoRTJKKTqxFXqIji1hn3wSpSEA3eSpJy0awdsFt2Zfc6SSE.60.woff2%22,%22preload%22:false,%22has_size_adjust%22:true}) format('woff2');
+> 335 |   unicode-range: U+6cb1-6cb2, U+6cb4-6cb5, U+6cb7, U+6cba, U+6cbc-6cbd, U+6cc1-6cc3, U+6cc5-6cc7, U+6cd0-6cd4, U+6cd6-6cd7, U+6cd9-6cda, U+6cde-6ce0, U+6ce4, U+6ce6, U+6ce9, U+6ceb-6cef, U+6cf1-6cf2, U+6cf6-6cf7, U+6cfa, U+6cfe, U+6d03-6d05, U+6d07-6d08, U+6d0a, U+6d0c, U+6d0e-6d11, U+6d13-6d14, U+6d16, U+6d18-6d1a, U+6d1c, U+6d1f, U+6d22-6d23, U+6d26-6d29, U+6d2b, U+6d2e-6d30, U+6d33, U+6d35-6d36, U+6d38-6d3a, U+6d3c, U+6d3f, U+6d42-6d44, U+6d48-6d49, U+6d4d, U+6d50, U+6d52, U+6d54, U+6d56-6d58, U+6d5a-6d5c, U+6d5e, U+6d60-6d61, U+6d63-6d65, U+6d67, U+6d6c-6d6d, U+6d6f, U+6d75, U+6d7b-6d7d, U+6d87, U+6d8a, U+6d8e, U+6d90-6d9a, U+6d9c-6da0, U+6da2-6da3, U+6da7, U+6daa-6dac, U+6dae, U+6db3-6db4, U+6db6, U+6db8, U+6dbc, U+6dbf, U+6dc2;
+      |         ^
+  336 | }
+  337 | @font-face {
+  338 |   font-family: 'Ma Shan Zheng';
+
+Import map: Resolved by import map
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/ma_shan_zheng_6bc5d4d4.module.css
+    [next]/internal/font/google/ma_shan_zheng_6bc5d4d4.js
+    ./src/app/layout.tsx
+
+https://nextjs.org/docs/messages/module-not-found @ http://localhost:3001/_next/static/chunks/node_modules_next_dist_b3fb3b5f._.js:1920
+[    1512ms] [ERROR] [next]/internal/font/google/ma_shan_zheng_6bc5d4d4.module.css:335:9
+Module not found: Can't resolve '@vercel/turbopack-next/internal/font/google/font'
+  333 |   font-display: swap;
+  334 |   src: url(@vercel/turbopack-next/internal/font/google/font?{%22url%22:%22https://fonts.gstatic.com/s/mashanzheng/v17/NaPecZTRCLxvwo41b4gvzkXaRMHsCoRTJKKTqxFXqIji1hn3wSpSEA3eSpJy0awdsFt2Zfc6SSE.60.woff2%22,%22preload%22:false,%22has_size_adjust%22:true}) format('woff2');
+> 335 |   unicode-range: U+6cb1-6cb2, U+6cb4-6cb5, U+6cb7, U+6cba, U+6cbc-6cbd, U+6cc1-6cc3, U+6cc5-6cc7, U+6cd0-6cd4, U+6cd6-6cd7, U+6cd9-6cda, U+6cde-6ce0, U+6ce4, U+6ce6, U+6ce9, U+6ceb-6cef, U+6cf1-6cf2, U+6cf6-6cf7, U+6cfa, U+6cfe, U+6d03-6d05, U+6d07-6d08, U+6d0a, U+6d0c, U+6d0e-6d11, U+6d13-6d14, U+6d16, U+6d18-6d1a, U+6d1c, U+6d1f, U+6d22-6d23, U+6d26-6d29, U+6d2b, U+6d2e-6d30, U+6d33, U+6d35-6d36, U+6d38-6d3a, U+6d3c, U+6d3f, U+6d42-6d44, U+6d48-6d49, U+6d4d, U+6d50, U+6d52, U+6d54, U+6d56-6d58, U+6d5a-6d5c, U+6d5e, U+6d60-6d61, U+6d63-6d65, U+6d67, U+6d6c-6d6d, U+6d6f, U+6d75, U+6d7b-6d7d, U+6d87, U+6d8a, U+6d8e, U+6d90-6d9a, U+6d9c-6da0, U+6da2-6da3, U+6da7, U+6daa-6dac, U+6dae, U+6db3-6db4, U+6db6, U+6db8, U+6dbc, U+6dbf, U+6dc2;
+      |         ^
+  336 | }
+  337 | @font-face {
+  338 |   font-family: 'Ma Shan Zheng';
+
+Import map: Resolved by import map
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/ma_shan_zheng_6bc5d4d4.module.css
+    [next]/internal/font/google/ma_shan_zheng_6bc5d4d4.js
+    ./src/app/layout.tsx
+
+https://nextjs.org/docs/messages/module-not-found @ http://localhost:3001/_next/static/chunks/node_modules_next_dist_b3fb3b5f._.js:1920
+[   27599ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3001/auth/register:0
+[   27649ms] ReferenceError: Ma_Shan_Zheng is not defined
+    at module evaluation (file:///Users/wxhou/Documents/hand-drawn-map/imap/.next/dev/server/chunks/ssr/[root-of-the-server]__346b9b66._.js:290:21)
+    at instantiateModule (file:///Users/wxhou/Documents/hand-drawn-map/imap/.next/dev/server/chunks/ssr/[turbopack]_runtime.js:740:9)
+    at getOrInstantiateModuleFromParent (file:///Users/wxhou/Documents/hand-drawn-map/imap/.next/dev/server/chunks/ssr/[turbopack]_runtime.js:763:12)
+    at Context.esmImport [as i] (file:///Users/wxhou/Documents/hand-drawn-map/imap/.next/dev/server/chunks/ssr/[turbopack]_runtime.js:228:20)
+    at module evaluation (file:///Users/wxhou/Documents/hand-drawn-map/imap/.next/dev/server/chunks/ssr/[root-of-the-server]__d5f6a03f._.js:14:47)
+    at instantiateModule (file:///Users/wxhou/Documents/hand-drawn-map/imap/.next/dev/server/chunks/ssr/[turbopack]_runtime.js:740:9)
+    at getOrInstantiateModuleFromParent (file:///Users/wxhou/Documents/hand-drawn-map/imap/.next/dev/server/chunks/ssr/[turbopack]_runtime.js:763:12)
+    at Context.commonJsRequire [as r] (file:///Users/wxhou/Documents/hand-drawn-map/imap/.next/dev/server/chunks/ssr/[turbopack]_runtime.js:249:12)
+    at Array.__TURBOPACK__layout__$23$1__ (file:///Users/wxhou/Documents/hand-drawn-map/imap/.next/dev/server/chunks/ssr/node_modules_next_dist_a80685dc._.js:2551:64)
+    at getLayoutOrPageModule (file:///Users/wxhou/Documents/hand-drawn-map/imap/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:37:6488)
+    at <unknown> (file:///Users/wxhou/Documents/hand-drawn-map/imap/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:37:27408)
+    at <unknown> (file:///Users/wxhou/Documents/hand-drawn-map/imap/node_modules/next/dist/server/lib/trace/tracer.js:185:36)
+    at NoopContextManager.with (file:///Users/wxhou/Documents/hand-drawn-map/imap/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:7062)
+    at ContextAPI.with (file:///Users/wxhou/Documents/hand-drawn-map/imap/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:518)
+    at NoopTracer.startActiveSpan (file:///Users/wxhou/Documents/hand-drawn-map/imap/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:18093)
+    at ProxyTracer.startActiveSpan (file:///Users/wxhou/Documents/hand-drawn-map/imap/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:18854)
+    at <unknown> (file:///Users/wxhou/Documents/hand-drawn-map/imap/node_modules/next/dist/server/lib/trace/tracer.js:154:103)
+    at NoopContextManager.with (file:///Users/wxhou/Documents/hand-drawn-map/imap/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:7062)
+    at ContextAPI.with (file:///Users/wxhou/Documents/hand-drawn-map/imap/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:518)
+    at NextTracerImpl.trace (file:///Users/wxhou/Documents/hand-drawn-map/imap/node_modules/next/dist/server/lib/trace/tracer.js:154:28)
+    at createComponentTreeInternal (file:///Users/wxhou/Documents/hand-drawn-map/imap/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:37:27245)
+    at <unknown> (file:///Users/wxhou/Documents/hand-drawn-map/imap/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:37:23425)
+    at <unknown> (file:///Users/wxhou/Documents/hand-drawn-map/imap/node_modules/next/dist/server/lib/trace/tracer.js:185:36)
+    at NoopContextManager.with (file:///Users/wxhou/Documents/hand-drawn-map/imap/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:7062)
+    at ContextAPI.with (file:///Users/wxhou/Documents/hand-drawn-map/imap/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:518)
+    at NoopTracer.startActiveSpan (file:///Users/wxhou/Documents/hand-drawn-map/imap/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:18093)
+    at ProxyTracer.startActiveSpan (file:///Users/wxhou/Documents/hand-drawn-map/imap/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:18854)
+    at <unknown> (file:///Users/wxhou/Documents/hand-drawn-map/imap/node_modules/next/dist/server/lib/trace/tracer.js:154:103)
+    at NoopContextManager.with (file:///Users/wxhou/Documents/hand-drawn-map/imap/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:7062)
+    at ContextAPI.with (file:///Users/wxhou/Documents/hand-drawn-map/imap/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:518)
+    at NextTracerImpl.trace (file:///Users/wxhou/Documents/hand-drawn-map/imap/node_modules/next/dist/server/lib/trace/tracer.js:154:28)
+    at createComponentTree (file:///Users/wxhou/Documents/hand-drawn-map/imap/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:37:23332)
+    at getRSCPayload (file:///Users/wxhou/Documents/hand-drawn-map/imap/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:41:30027)
+    at AsyncLocalStorage.run (node:internal/async_local_storage/async_context_frame:63:14)
+    at <unknown> (file:///Users/wxhou/Documents/hand-drawn-map/imap/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:41:58298)
+    at NoopContextManager.with (file:///Users/wxhou/Documents/hand-drawn-map/imap/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:7062)
+    at ContextAPI.with (file:///Users/wxhou/Documents/hand-drawn-map/imap/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:518)
+    at NextTracerImpl.withSpan (file:///Users/wxhou/Documents/hand-drawn-map/imap/node_modules/next/dist/server/lib/trace/tracer.js:262:28)
+    at renderToStream (file:///Users/wxhou/Documents/hand-drawn-map/imap/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:41:55386)
+    at renderToHTMLOrFlightImpl (file:///Users/wxhou/Documents/hand-drawn-map/imap/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:41:43410)
+[   33530ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3001/auth/register:0
+[   33714ms] ReferenceError: maShanZheng is not defined
+    at RootLayout (about://React/Server/file:///Users/wxhou/Documents/hand-drawn-map/imap/.next/dev/server/chunks/ssr/%5Broot-of-the-server%5D__346b9b66._.js?0:323:833)
+    at resolveErrorDev (http://localhost:3001/_next/static/chunks/node_modules_next_dist_compiled_react-server-dom-turbopack_9212ccad._.js:1894:106)
+    at processFullStringRow (http://localhost:3001/_next/static/chunks/node_modules_next_dist_compiled_react-server-dom-turbopack_9212ccad._.js:2402:29)
+    at processFullBinaryRow (http://localhost:3001/_next/static/chunks/node_modules_next_dist_compiled_react-server-dom-turbopack_9212ccad._.js:2361:9)
+    at processBinaryChunk (http://localhost:3001/_next/static/chunks/node_modules_next_dist_compiled_react-server-dom-turbopack_9212ccad._.js:2470:221)
+    at progress (http://localhost:3001/_next/static/chunks/node_modules_next_dist_compiled_react-server-dom-turbopack_9212ccad._.js:2640:13)
+[   36733ms] [WARNING] The resource http://localhost:3001/_next/static/media/feb57b2dc8f29018-s.p.2539f70a.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://localhost:3001/auth/register:0
+[   36733ms] [WARNING] The resource http://localhost:3001/_next/static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://localhost:3001/auth/register:0
+[   36733ms] [WARNING] The resource http://localhost:3001/_next/static/media/f112ed7f0b91582f-s.p.12569d31.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://localhost:3001/auth/register:0
+[   36733ms] [WARNING] The resource http://localhost:3001/_next/static/media/GeistMonoVF-s.p.2cee7d16.woff was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://localhost:3001/auth/register:0
+[   36733ms] [WARNING] The resource http://localhost:3001/_next/static/media/GeistVF-s.p.4c3c0b96.woff was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://localhost:3001/auth/register:0

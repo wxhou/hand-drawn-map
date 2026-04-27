@@ -1,15 +1,33 @@
 'use client';
 
 import * as React from 'react';
+import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
-export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+const inputVariants = cva(
+  'flex h-14 w-full rounded-xl border-2 px-4 py-2 text-base transition-all duration-200 focus:outline-none focus:ring-4 disabled:cursor-not-allowed disabled:opacity-50',
+  {
+    variants: {
+      variant: {
+        default:
+          'border-light-border bg-light-surface text-light-text placeholder:text-light-text-muted focus:border-light-primary focus:ring-light-primary/15',
+        artistic:
+          'border-[var(--art-primary-light)] bg-[var(--art-bg-paper)] text-[var(--art-text-primary)] placeholder:text-[var(--art-text-muted)] focus:border-[var(--art-primary)] focus:ring-[var(--art-primary)]/15',
+      },
+    },
+    defaultVariants: {
+      variant: 'default',
+    },
+  }
+);
+
+export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement>, VariantProps<typeof inputVariants> {
   icon?: React.ReactNode;
   error?: string;
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, icon, error, ...props }, ref) => {
+  ({ className, type, icon, error, variant, ...props }, ref) => {
     return (
       <div className="relative">
         {icon && (
@@ -20,10 +38,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         <input
           type={type}
           className={cn(
-            'flex h-14 w-full rounded-xl border-2 border-light-border bg-light-surface px-4 py-2 text-base text-light-text placeholder:text-light-text-muted',
-            'transition-all duration-200',
-            'focus:border-light-primary focus:outline-none focus:ring-4 focus:ring-light-primary/15',
-            'disabled:cursor-not-allowed disabled:opacity-50',
+            inputVariants({ variant }),
             error && 'border-light-error focus:border-light-error focus:ring-light-error/15',
             icon && 'pl-12',
             className
@@ -40,4 +55,4 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 );
 Input.displayName = 'Input';
 
-export { Input };
+export { Input, inputVariants };

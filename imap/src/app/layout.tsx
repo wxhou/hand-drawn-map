@@ -1,14 +1,22 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import { Inter } from 'next/font/google';
-import { Agentation } from "agentation";
+import { Noto_Serif_SC, Noto_Sans_SC } from 'next/font/google';
+import { SessionProvider } from "next-auth/react";
 import "./globals.css";
-import { ThemeProvider } from "@/lib/theme";
 import { Header } from "@/components/layout/Header";
+import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
+import { ToastProvider } from "@/components/ui/Toast";
 
-const inter = Inter({
+const notoSerifSC = Noto_Serif_SC({
+  weight: ['400', '600', '700'],
   subsets: ['latin'],
-  variable: '--font-inter',
+  variable: '--font-noto-serif',
+});
+
+const notoSansSC = Noto_Sans_SC({
+  weight: ['400', '500', '600'],
+  subsets: ['latin'],
+  variable: '--font-noto-sans',
 });
 
 const geistSans = localFont({
@@ -16,16 +24,11 @@ const geistSans = localFont({
   variable: "--font-geist-sans",
   weight: "100 900",
 });
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
 
 export const metadata: Metadata = {
-  title: "手绘地图 - 把有意义的地方变成礼物",
-  description: "用 AI 将任何地点转换为独特的手绘风格艺术地图，适合作为生日、纪念日、婚礼等场合的特别礼物",
-  keywords: ["手绘地图", "AI地图", "礼物", "个性化", "艺术", "旅行纪念"],
+  title: "GPT Image 2 Prompts - 探索 AI 图像生成的无限可能",
+  description: "发现并学习最优质的 GPT Image 2 提示词，支持分类浏览、一键复制提示词，让 AI 图像生成变得更简单。",
+  keywords: ["GPT Image 2", "AI 图像", "提示词", "Prompt", "AI Art"],
 };
 
 export default function RootLayout({
@@ -35,16 +38,23 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="zh-CN" suppressHydrationWarning>
+      <head>
+        <link rel="icon" href="/favicon.ico" />
+      </head>
       <body
-        className={`${inter.variable} ${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
+        className={`${geistSans.variable} ${notoSerifSC.variable} ${notoSansSC.variable} antialiased min-h-screen flex flex-col`}
+        style={{ backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }}
       >
-        {process.env.NODE_ENV === "development" && <Agentation />}
-        <ThemeProvider>
-          <Header />
-          <main className="flex-1 pt-16">
-            {children}
-          </main>
-        </ThemeProvider>
+        <SessionProvider>
+          <ErrorBoundary>
+            <ToastProvider>
+              <Header />
+              <main className="flex-1">
+                {children}
+              </main>
+            </ToastProvider>
+          </ErrorBoundary>
+        </SessionProvider>
       </body>
     </html>
   );
