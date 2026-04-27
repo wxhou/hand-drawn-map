@@ -5,11 +5,7 @@ import { useSession, signOut } from 'next-auth/react';
 import { Sparkles, Upload } from 'lucide-react';
 
 export function Header() {
-  const { data: session, status } = useSession();
-
-  if (status === 'loading') {
-    return null;
-  }
+  const { data: session } = useSession();
 
   const user = session?.user;
 
@@ -73,13 +69,7 @@ export function Header() {
             >
               退出
             </button>
-          ) : (
-            <Link href="/auth/login">
-              <button className="btn-secondary text-sm py-2 px-4">
-                登录
-              </button>
-            </Link>
-          )}
+          ) : null}
         </div>
       </div>
     </header>
