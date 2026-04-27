@@ -33,3 +33,26 @@ export async function GET(request: NextRequest) {
 
   return NextResponse.json({ prompts, total, page, limit });
 }
+
+export async function POST(request: NextRequest) {
+  const body = await request.json();
+  const { title, description, category, promptText, imageUrl, authorName } = body;
+
+  if (!title || !category || !promptText || !imageUrl) {
+    return NextResponse.json({ error: '请填写所有必填项' }, { status: 400 });
+  }
+
+  const prompt = await db.prompt.create({
+    data: {
+      title,
+      description: description || '',
+      category,
+      promptText,
+      imageUrl,
+      authorName: authorName || '匿名用户',
+      source: 'user_submit',
+    },
+  });
+
+  return NextResponse.json(prompt, { status: 201 });
+}
