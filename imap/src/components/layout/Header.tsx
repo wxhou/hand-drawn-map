@@ -29,31 +29,6 @@ export function Header() {
           </span>
         </Link>
 
-        {/* Navigation */}
-        <nav className="hidden md:flex items-center gap-8">
-          <Link
-            href="/"
-            className="text-sm font-medium transition-colors duration-200 hover:text-white"
-            style={{ color: 'var(--text-secondary)' }}
-          >
-            首页
-          </Link>
-          <Link
-            href="/gallery"
-            className="text-sm font-medium transition-colors duration-200 hover:text-white"
-            style={{ color: 'var(--text-secondary)' }}
-          >
-            画廊
-          </Link>
-          <Link
-            href="/submit"
-            className="text-sm font-medium transition-colors duration-200 hover:text-white"
-            style={{ color: 'var(--text-secondary)' }}
-          >
-            提交
-          </Link>
-        </nav>
-
         {/* Actions */}
         <div className="flex items-center gap-3">
           <Link href="/submit">
