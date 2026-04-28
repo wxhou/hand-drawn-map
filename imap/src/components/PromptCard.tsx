@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Heart, Tag } from 'lucide-react';
+import { Heart } from 'lucide-react';
 
 interface PromptCardProps {
   prompt: {
@@ -23,31 +23,27 @@ interface PromptCardProps {
 export function PromptCard({ prompt, index, onClick }: PromptCardProps) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.05, duration: 0.4 }}
+      transition={{ delay: index * 0.06, duration: 0.7, ease: [0.25, 1, 0.5, 1] }}
       className="group cursor-pointer"
       style={{
-        backgroundColor: 'rgba(19, 19, 26, 0.7)',
-        borderRadius: 20,
-        border: '1px solid var(--border)',
+        backgroundColor: 'var(--bg-card)',
+        borderRadius: 10,
         overflow: 'hidden',
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
-        backdropFilter: 'blur(16px)',
-        WebkitBackdropFilter: 'blur(16px)',
-        transition: 'box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+        boxShadow: '0 2px 12px rgba(0,0,0,0.2)',
+        transition: 'transform 0.5s var(--ease-ink), box-shadow 0.5s var(--ease-ink)',
       }}
       onMouseEnter={(e) => {
-        (e.currentTarget as HTMLElement).style.transform = 'translateY(-8px) scale(1.02)';
-        (e.currentTarget as HTMLElement).style.boxShadow = '0 24px 48px rgba(0,0,0,0.4), 0 0 40px rgba(178,69,146,0.12)';
-        (e.currentTarget as HTMLElement).style.borderColor = 'rgba(178,69,146,0.5)';
+        (e.currentTarget as HTMLElement).style.transform = 'translateY(-3px)';
+        (e.currentTarget as HTMLElement).style.boxShadow = '0 8px 24px rgba(0,0,0,0.3)';
       }}
       onMouseLeave={(e) => {
-        (e.currentTarget as HTMLElement).style.transform = 'translateY(0) scale(1)';
-        (e.currentTarget as HTMLElement).style.boxShadow = 'none';
-        (e.currentTarget as HTMLElement).style.borderColor = 'var(--border)';
+        (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
+        (e.currentTarget as HTMLElement).style.boxShadow = '0 2px 12px rgba(0,0,0,0.2)';
       }}
     >
       <button
@@ -55,106 +51,122 @@ export function PromptCard({ prompt, index, onClick }: PromptCardProps) {
         className="w-full text-left"
         style={{ display: 'flex', flexDirection: 'column', flex: 1 }}
       >
-        {/* Image — fixed 16:10 ratio: container clips overflow, img controls its own ratio */}
+        {/* Image */}
         <div style={{ width: '100%', overflow: 'hidden', flexShrink: 0, position: 'relative', aspectRatio: '16/10' }}>
           <img
             src={prompt.imageUrl}
             alt={prompt.title}
-            className="w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            className="w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
             style={{ display: 'block', aspectRatio: '16/10', width: '100%' }}
             loading="lazy"
           />
-          {/* Category badge — top left */}
-          <div
-            style={{
-              position: 'absolute',
-              top: 12,
-              left: 12,
-              padding: '4px 10px',
-              borderRadius: 9999,
-              fontSize: 11,
-              fontWeight: 600,
-              backgroundColor: 'rgba(0,0,0,0.6)',
-              color: '#fff',
-              border: '1px solid rgba(255,255,255,0.15)',
-              backdropFilter: 'blur(4px)',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 4,
-            }}
-          >
-            {prompt.category}
-          </div>
-          {/* Like badge — bottom right */}
+          {/* Category — bottom left, minimal pill */}
           <div
             style={{
               position: 'absolute',
               bottom: 10,
-              right: 10,
-              padding: '4px 10px',
-              borderRadius: 9999,
+              left: 10,
+              padding: '3px 8px',
+              borderRadius: 4,
               fontSize: 11,
-              fontWeight: 600,
-              backgroundColor: 'rgba(0,0,0,0.6)',
-              color: '#F15F79',
-              border: '1px solid rgba(241,95,121,0.3)',
-              backdropFilter: 'blur(4px)',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 4,
+              fontWeight: 500,
+              backgroundColor: 'rgba(13, 12, 11, 0.75)',
+              color: 'var(--text-secondary)',
+              letterSpacing: '0.04em',
             }}
           >
-            <Heart style={{ width: 12, height: 12, fill: '#F15F79', color: '#F15F79' }} />
-            {prompt.likeCount}
+            {prompt.category}
           </div>
+          {/* Likes — bottom right */}
+          {prompt.likeCount > 0 && (
+            <div
+              style={{
+                position: 'absolute',
+                bottom: 10,
+                right: 10,
+                padding: '3px 8px',
+                borderRadius: 4,
+                fontSize: 11,
+                fontWeight: 500,
+                backgroundColor: 'rgba(13, 12, 11, 0.75)',
+                color: 'var(--accent)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 4,
+              }}
+            >
+              <Heart style={{ width: 11, height: 11, fill: 'var(--accent)', color: 'var(--accent)' }} />
+              {prompt.likeCount}
+            </div>
+          )}
         </div>
 
-        {/* Content area — fixed min-height so all cards in a row align */}
-        <div className="p-4" style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 100 }}>
+        {/* Content */}
+        <div style={{ padding: '16px 18px 18px', flex: 1, display: 'flex', flexDirection: 'column' }}>
           <h3
-            className="font-semibold text-sm leading-snug"
             style={{
-              background: 'var(--accent-gradient)',
-              backgroundClip: 'text',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              minHeight: 36,
+              fontFamily: 'var(--font-serif)',
+              fontSize: 14,
+              fontWeight: 600,
+              lineHeight: 1.5,
+              color: 'var(--text-primary)',
+              minHeight: 42,
               display: '-webkit-box',
               WebkitLineClamp: 2,
               WebkitBoxOrient: 'vertical',
               overflow: 'hidden',
+              letterSpacing: '0.02em',
             }}
           >
             {prompt.title}
           </h3>
 
           <p
-            className="text-xs line-clamp-2 leading-relaxed"
-            style={{ color: 'var(--text-secondary)', flex: 1, minHeight: 32, marginTop: 6, marginBottom: 10 }}
+            className="line-clamp-2"
+            style={{
+              color: 'var(--text-tertiary)',
+              fontSize: 12,
+              lineHeight: 1.7,
+              flex: 1,
+              marginTop: 8,
+            }}
           >
             {prompt.description || ''}
           </p>
 
-          {/* Author — always at bottom */}
+          {/* Author */}
           <div
-            className="flex items-center gap-2 pt-2.5 mt-auto"
-            style={{ borderTop: '1px solid var(--border)' }}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              paddingTop: 14,
+              marginTop: 12,
+              borderTop: '1px solid var(--border)',
+            }}
           >
             {prompt.authorAvatar ? (
-              <img
-                src={prompt.authorAvatar}
-                alt={prompt.authorName}
-                className="w-6 h-6 rounded-full"
-              />
+              <img src={prompt.authorAvatar} alt={prompt.authorName} className="w-5 h-5 rounded-full" />
             ) : (
               <div
-                className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
-                style={{ background: 'var(--accent-gradient)', color: 'white' }}
+                style={{
+                  width: 20,
+                  height: 20,
+                  borderRadius: '50%',
+                  background: 'var(--accent-muted)',
+                  color: 'var(--accent)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: 10,
+                  fontWeight: 600,
+                  flexShrink: 0,
+                }}
               >
                 {prompt.authorName[0]?.toUpperCase()}
               </div>
             )}
-            <span className="text-xs truncate" style={{ color: 'var(--text-secondary)' }}>
+            <span style={{ color: 'var(--text-tertiary)', fontSize: 12 }} className="truncate">
               {prompt.authorName}
             </span>
           </div>
@@ -169,8 +181,8 @@ export function SkeletonCard() {
     <div
       className="animate-pulse"
       style={{
-        backgroundColor: 'var(--bg-secondary)',
-        borderRadius: 20,
+        backgroundColor: 'var(--bg-card)',
+        borderRadius: 12,
         border: '1px solid var(--border)',
         overflow: 'hidden',
         height: '100%',
@@ -180,10 +192,10 @@ export function SkeletonCard() {
     >
       <div className="shimmer" style={{ aspectRatio: '16/10', flexShrink: 0 }} />
       <div className="p-4 space-y-3" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-        <div className="shimmer h-4 w-3/4 rounded-lg" />
-        <div className="shimmer h-3 w-full rounded-lg" />
+        <div className="shimmer h-4 w-3/4 rounded" />
+        <div className="shimmer h-3 w-full rounded" />
         <div style={{ flex: 1 }} />
-        <div className="flex justify-between pt-2.5" style={{ borderTop: '1px solid var(--border)' }}>
+        <div className="flex justify-between pt-3" style={{ borderTop: '1px solid var(--border)' }}>
           <div className="shimmer h-3 w-16 rounded" />
           <div className="shimmer h-3 w-8 rounded" />
         </div>

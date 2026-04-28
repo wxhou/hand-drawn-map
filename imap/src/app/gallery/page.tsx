@@ -156,11 +156,12 @@ export default function Gallery() {
       <PromptModal
         prompt={selectedPrompt}
         onClose={() => setSelectedPrompt(null)}
-        onLike={async () => {
-          if (!selectedPrompt) return;
-          await fetch(`/api/prompts/${selectedPrompt.id}/like`, { method: 'POST' });
+        onLikeChange={(id, delta) => {
+          setPrompts((prev) =>
+            prev.map((p) => p.id === id ? { ...p, likeCount: Math.max(0, p.likeCount + delta) } : p)
+          );
           setSelectedPrompt((prev) =>
-            prev ? { ...prev, likeCount: prev.likeCount + 1 } : null
+            prev && prev.id === id ? { ...prev, likeCount: Math.max(0, prev.likeCount + delta) } : prev
           );
         }}
       />

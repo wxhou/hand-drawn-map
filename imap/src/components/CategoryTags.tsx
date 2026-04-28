@@ -12,18 +12,21 @@ import {
   Monitor,
   Package,
   Shirt,
-  Building2,
+  Building,
 } from 'lucide-react';
 
 const CATEGORIES = [
-  { name: '全部', icon: LayoutGrid, hue: '0' },
-  { name: '个人资料 / 头像', icon: User, hue: '330' },
-  { name: '社交媒体帖子', icon: Share2, hue: '260' },
-  { name: '信息图 / 教育视觉图', icon: BarChart3, hue: '200' },
-  { name: 'YouTube 缩略图', icon: Youtube, hue: '0' },
-  { name: '漫画 / 故事板', icon: BookOpen, hue: '280' },
-  { name: '海报 / 传单', icon: FileText, hue: '30' },
-  { name: 'APP / 网页设计', icon: Monitor, hue: '170' },
+  { name: '全部', icon: LayoutGrid },
+  { name: '个人资料 / 头像', icon: User },
+  { name: '社交媒体帖子', icon: Share2 },
+  { name: '信息图 / 教育视觉图', icon: BarChart3 },
+  { name: 'YouTube 缩略图', icon: Youtube },
+  { name: '漫画 / 故事板', icon: BookOpen },
+  { name: '海报 / 传单', icon: FileText },
+  { name: '产品展示', icon: Package },
+  { name: 'APP / 网页设计', icon: Monitor },
+  { name: '时尚 / 服装', icon: Shirt },
+  { name: '建筑 / 室内设计', icon: Building },
 ];
 
 interface CategoryTagsProps {
@@ -46,25 +49,20 @@ export function CategoryTags({ activeCategory, onSelect, showAll = true }: Categ
           <motion.button
             key={cat.name}
             onClick={() => onSelect(cat.name)}
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: index * 0.03, duration: 0.2 }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: index * 0.04, duration: 0.5 }}
+            className="flex items-center gap-2 px-4 py-2 rounded-md text-sm transition-colors"
             style={{
-              backgroundColor: isActive
-                ? 'var(--accent-gradient)'
-                : `hsla(${cat.hue}, 40%, 15%, 0.6)`,
-              color: isActive ? 'white' : 'var(--text-secondary)',
-              border: isActive ? 'none' : `1px solid hsla(${cat.hue}, 30%, 40%, 0.2)`,
-              backdropFilter: isActive ? 'none' : 'blur(8px)',
+              fontFamily: isActive ? 'var(--font-serif)' : 'var(--font-sans)',
+              fontWeight: isActive ? 600 : 400,
+              backgroundColor: isActive ? 'var(--accent-muted)' : 'transparent',
+              color: isActive ? 'var(--accent)' : 'var(--text-secondary)',
+              border: isActive ? '1px solid var(--accent-border)' : '1px solid var(--border)',
+              letterSpacing: '0.02em',
             }}
           >
-            <Icon
-              className="shrink-0"
-              style={{ width: 14, height: 14 }}
-            />
+            <Icon style={{ width: 14, height: 14 }} />
             <span>{cat.name}</span>
           </motion.button>
         );

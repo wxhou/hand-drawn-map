@@ -1,9 +1,23 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Copy, Check, Heart, Share2 } from 'lucide-react';
+import { X, Copy, Check, Heart, Share2, Eye } from 'lucide-react';
 import { useToast } from '@/components/ui/Toast';
+
+const LIKES_KEY = 'imap_liked_ids';
+
+function getLikedIds(): Set<string> {
+  try {
+    return new Set(JSON.parse(localStorage.getItem(LIKES_KEY) || '[]'));
+  } catch {
+    return new Set();
+  }
+}
+
+function saveLikedIds(ids: Set<string>) {
+  localStorage.setItem(LIKES_KEY, JSON.stringify([...ids]));
+}
 
 interface PromptModalProps {
   prompt: {
@@ -16,16 +30,32 @@ interface PromptModalProps {
     authorName: string;
     authorAvatar?: string | null;
     likeCount: number;
+    viewCount: number;
     source: string;
     createdAt: string;
   } | null;
   onClose: () => void;
-  onLike?: () => void;
+  onLikeChange?: (id: string, delta: number) => void;
 }
 
-export function PromptModal({ prompt, onClose, onLike }: PromptModalProps) {
+export function PromptModal({ prompt, onClose, onLikeChange }: PromptModalProps) {
   const [copied, setCopied] = useState(false);
+  const [liked, setLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
+  const [viewCount, setViewCount] = useState(0);
   const { toast } = useToast();
+
+  useEffect(() => {
+    if (prompt) {
+      setLiked(getLikedIds().has(prompt.id));
+      setLikeCount(prompt.likeCount);
+      setViewCount(prompt.viewCount);
+      // Increment view count
+      fetch(`/api/prompts/${prompt.id}`).then(r => r.json()).then(data => {
+        if (data.viewCount !== undefined) setViewCount(data.viewCount);
+      }).catch(() => {});
+    }
+  }, [prompt]);
 
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
@@ -35,7 +65,6 @@ export function PromptModal({ prompt, onClose, onLike }: PromptModalProps) {
     return () => document.removeEventListener('keydown', handleEsc);
   }, [onClose]);
 
-  // Lock body scroll when modal is open
   useEffect(() => {
     if (prompt) {
       document.body.style.overflow = 'hidden';
@@ -45,6 +74,36 @@ export function PromptModal({ prompt, onClose, onLike }: PromptModalProps) {
     return () => { document.body.style.overflow = ''; };
   }, [prompt]);
 
+  const promptId = prompt?.id ?? '';
+
+  const handleLike = useCallback(async () => {
+    if (!promptId) return;
+    const likedIds = getLikedIds();
+    const isLiked = likedIds.has(promptId);
+    const delta = isLiked ? -1 : 1;
+
+    try {
+      const res = await fetch(`/api/prompts/${promptId}/like`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(isLiked ? { unlike: true } : {}),
+      });
+      const data = await res.json();
+      setLikeCount(data.likeCount);
+      setLiked(!isLiked);
+      onLikeChange?.(promptId, delta);
+
+      if (isLiked) {
+        likedIds.delete(promptId);
+      } else {
+        likedIds.add(promptId);
+      }
+      saveLikedIds(likedIds);
+    } catch {
+      toast('操作失败', 'error');
+    }
+  }, [promptId, onLikeChange, toast]);
+
   if (!prompt) return null;
 
   const handleCopy = async () => {
@@ -52,9 +111,7 @@ export function PromptModal({ prompt, onClose, onLike }: PromptModalProps) {
     try {
       JSON.parse(text);
       text = JSON.stringify(JSON.parse(text), null, 2);
-    } catch {
-      // use as-is
-    }
+    } catch { /* use as-is */ }
     try {
       await navigator.clipboard.writeText(text);
       setCopied(true);
@@ -66,8 +123,10 @@ export function PromptModal({ prompt, onClose, onLike }: PromptModalProps) {
   };
 
   const handleShare = async () => {
+    const url = new URL(window.location.href);
+    url.searchParams.set('prompt', prompt.id);
     try {
-      await navigator.clipboard.writeText(window.location.href + '?prompt=' + prompt.id);
+      await navigator.clipboard.writeText(url.toString());
       toast('链接已复制', 'success');
     } catch {
       toast('分享失败', 'error');
@@ -96,30 +155,31 @@ export function PromptModal({ prompt, onClose, onLike }: PromptModalProps) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
+        transition={{ duration: 0.3 }}
         className="fixed inset-0 z-50 flex items-center justify-center p-4"
-        style={{ backgroundColor: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(4px)' }}
+        style={{ backgroundColor: 'rgba(13, 12, 11, 0.9)' }}
         onClick={onClose}
       >
         <motion.div
-          initial={{ opacity: 0, scale: 0.95, y: 24 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.95, y: 24 }}
-          transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-          className="relative w-full max-w-4xl max-h-[90vh] overflow-hidden rounded-3xl"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 20 }}
+          transition={{ duration: 0.4, ease: [0.25, 1, 0.5, 1] }}
+          className="relative w-full max-w-4xl max-h-[90vh] overflow-hidden rounded-xl"
           style={{ backgroundColor: 'var(--bg-secondary)', border: '1px solid var(--border)' }}
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Close button */}
+          {/* Close */}
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 z-10 p-2.5 rounded-full backdrop-blur-md transition-all hover:scale-110 active:scale-95"
+            className="absolute top-4 right-4 z-10 p-2 rounded-md transition-colors"
             style={{
-              backgroundColor: 'rgba(26,26,36,0.8)',
-              color: 'var(--text-primary)',
+              backgroundColor: 'var(--bg-tertiary)',
+              color: 'var(--text-secondary)',
               border: '1px solid var(--border)',
             }}
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
 
           <div className="grid md:grid-cols-2 max-h-[90vh]">
@@ -131,13 +191,12 @@ export function PromptModal({ prompt, onClose, onLike }: PromptModalProps) {
                 className="w-full h-full object-cover"
                 style={{ minHeight: 280 }}
               />
-              {/* Category pill over image */}
               <div
-                className="absolute bottom-4 left-4 px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-md"
+                className="absolute bottom-4 left-4 px-3 py-1 rounded text-xs font-medium"
                 style={{
-                  backgroundColor: 'rgba(0,0,0,0.6)',
-                  color: '#fff',
-                  border: '1px solid rgba(255,255,255,0.2)',
+                  backgroundColor: 'rgba(13, 12, 11, 0.75)',
+                  color: 'var(--text-secondary)',
+                  letterSpacing: '0.04em',
                 }}
               >
                 {prompt.category}
@@ -146,31 +205,48 @@ export function PromptModal({ prompt, onClose, onLike }: PromptModalProps) {
 
             {/* Content */}
             <div className="flex flex-col p-6 md:p-8 gap-5 overflow-y-auto" style={{ maxHeight: '90vh' }}>
-              {/* Date */}
-              <div className="text-xs" style={{ color: 'var(--text-secondary)' }}>
-                {formatDate(prompt.createdAt)}
+              <div className="flex items-center justify-between text-xs" style={{ color: 'var(--text-tertiary)', letterSpacing: '0.04em' }}>
+                <span>{formatDate(prompt.createdAt)}</span>
+                <span className="flex items-center gap-1"><Eye className="w-3 h-3" />{viewCount}</span>
               </div>
 
-              {/* Title */}
-              <h2 className="text-2xl font-bold leading-tight" style={{ color: 'var(--text-primary)' }}>
+              <h2
+                style={{
+                  fontFamily: 'var(--font-serif)',
+                  fontSize: 20,
+                  fontWeight: 700,
+                  lineHeight: 1.4,
+                  color: 'var(--text-primary)',
+                  letterSpacing: '0.02em',
+                }}
+              >
                 {prompt.title}
               </h2>
 
               {/* Author */}
               <div className="flex items-center gap-3">
                 {prompt.authorAvatar ? (
-                  <img src={prompt.authorAvatar} alt={prompt.authorName} className="w-10 h-10 rounded-full ring-2 ring-pink-500/30" />
+                  <img src={prompt.authorAvatar} alt={prompt.authorName} className="w-8 h-8 rounded-full" />
                 ) : (
                   <div
-                    className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold"
-                    style={{ background: 'var(--accent-gradient)', color: 'white' }}
+                    style={{
+                      width: 32,
+                      height: 32,
+                      borderRadius: '50%',
+                      background: 'var(--accent-muted)',
+                      color: 'var(--accent)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: 12,
+                      fontWeight: 600,
+                    }}
                   >
                     {prompt.authorName[0]?.toUpperCase()}
                   </div>
                 )}
                 <div>
                   <div className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{prompt.authorName}</div>
-                  <div className="text-xs" style={{ color: 'var(--text-secondary)' }}>用户提交</div>
                 </div>
               </div>
 
@@ -184,12 +260,12 @@ export function PromptModal({ prompt, onClose, onLike }: PromptModalProps) {
               {/* Prompt box */}
               <div className="flex-1 min-h-0">
                 <div
-                  className="rounded-2xl p-4 overflow-auto"
-                  style={{ backgroundColor: 'var(--bg-tertiary)', maxHeight: 220 }}
+                  className="rounded-lg p-4 overflow-auto"
+                  style={{ backgroundColor: 'var(--bg-primary)', maxHeight: 220 }}
                 >
                   <pre
                     className="text-xs whitespace-pre-wrap break-all leading-relaxed"
-                    style={{ color: 'var(--text-primary)', fontFamily: 'monospace' }}
+                    style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}
                   >
                     {promptDisplay}
                   </pre>
@@ -200,23 +276,30 @@ export function PromptModal({ prompt, onClose, onLike }: PromptModalProps) {
               <div className="flex gap-3 pt-1">
                 <button
                   onClick={handleCopy}
-                  className="btn-primary flex-1 justify-center py-3.5 text-sm font-semibold"
-                  style={{ borderRadius: 14 }}
+                  className="btn-primary flex-1 justify-center py-3 text-sm"
+                  style={{ borderRadius: 8 }}
                 >
                   {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                   {copied ? '已复制' : '复制 Prompt'}
                 </button>
                 <button
-                  onClick={onLike}
-                  className="btn-secondary px-4 py-3.5"
-                  style={{ borderRadius: 14 }}
+                  onClick={handleLike}
+                  className="btn-secondary px-4 py-3 flex items-center gap-1"
+                  style={{ borderRadius: 8 }}
                 >
-                  <Heart className="w-4 h-4" style={{ fill: '#F15F79', color: '#F15F79' }} />
+                  <Heart
+                    className="w-4 h-4"
+                    style={{
+                      fill: liked ? 'var(--accent)' : 'none',
+                      color: 'var(--accent)',
+                    }}
+                  />
+                  <span className="text-xs">{likeCount}</span>
                 </button>
                 <button
                   onClick={handleShare}
-                  className="btn-secondary px-4 py-3.5"
-                  style={{ borderRadius: 14 }}
+                  className="btn-secondary px-4 py-3"
+                  style={{ borderRadius: 8 }}
                 >
                   <Share2 className="w-4 h-4" />
                 </button>
