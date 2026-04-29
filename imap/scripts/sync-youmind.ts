@@ -1,11 +1,14 @@
 import { config } from 'dotenv';
-config();
 import fs from 'fs';
+config();
 
 const TURSO_URL = process.env.TURSO_DATABASE_URL || '';
 const TURSO_TOKEN = process.env.TURSO_AUTH_TOKEN || '';
 const TURSO_HTTP = TURSO_URL.replace('libsql://', 'https://');
 const AUTH = 'Bearer ' + TURSO_TOKEN;
+
+const MODE = process.env.SYNC_MODE || 'full'; // 'full' | 'incremental'
+const STATE_FILE = process.env.STATE_FILE || 'scripts/.sync-state.json';
 
 interface YoumindPrompt {
   id: number;
@@ -14,9 +17,17 @@ interface YoumindPrompt {
   content: string;
   translatedContent?: string;
   media?: string[];
-  author?: { name: string };
+  mediaThumbnails?: string[];
+  author?: { name: string; link?: string };
   featured?: boolean;
   likes?: number;
+  sourceLink?: string;
+  sourcePublishedAt?: string;
+}
+
+interface SyncState {
+  lastSyncAt: string;
+  lastTotalFetched: number;
 }
 
 // Turso v2 Pipeline API requires typed args
@@ -57,12 +68,6 @@ async function fetchYoumindPage(page: number, limit: number) {
       'Origin': 'https://youmind.com',
       'Referer': 'https://youmind.com/zh-CN/gpt-image-2-prompts',
       'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36',
-      'sec-ch-ua': '"Google Chrome";v="147", "Chromium";v="147", "Not/A)Brand";v="8"',
-      'sec-ch-ua-mobile': '?0',
-      'sec-ch-ua-platform': '"macOS"',
-      'sec-fetch-dest': 'empty',
-      'sec-fetch-mode': 'cors',
-      'sec-fetch-site': 'same-origin',
     },
     body: JSON.stringify({
       model: 'gpt-image-2', page, limit,
@@ -74,22 +79,43 @@ async function fetchYoumindPage(page: number, limit: number) {
   return res.json();
 }
 
+function loadState(): SyncState | null {
+  try {
+    if (fs.existsSync(STATE_FILE)) {
+      return JSON.parse(fs.readFileSync(STATE_FILE, 'utf-8'));
+    }
+  } catch { /* ignore */ }
+  return null;
+}
+
+function saveState(state: SyncState) {
+  fs.writeFileSync(STATE_FILE, JSON.stringify(state, null, 2));
+}
+
 async function main() {
   if (!TURSO_URL || !TURSO_TOKEN) {
     console.error('Set TURSO_DATABASE_URL and TURSO_AUTH_TOKEN');
     process.exit(1);
   }
 
+  const isIncremental = MODE === 'incremental';
+  const state = loadState();
+
+  console.log(`Sync mode: ${MODE}`);
   console.log('Fetching youmind total...');
   const first = await fetchYoumindPage(1, 1);
   const total = first.total;
   const pages = Math.ceil(total / 100);
   console.log(`Total: ${total}, Pages: ${pages}`);
 
-  let inserted = 0, skipped = 0, errors = 0;
+  // For incremental: only sync recent pages (first 3 pages = ~300 most recent)
+  const startPage = isIncremental ? 1 : 1;
+  const endPage = isIncremental ? Math.min(3, pages) : pages;
 
-  for (let page = 1; page <= pages; page++) {
-    console.log(`Page ${page}/${pages}...`);
+  let inserted = 0, updated = 0, skipped = 0, errors = 0;
+
+  for (let page = startPage; page <= endPage; page++) {
+    console.log(`Page ${page}/${endPage}...`);
 
     let prompts: YoumindPrompt[];
     try {
@@ -115,14 +141,22 @@ async function main() {
       const imageUrl = (p.media?.[0] || '').substring(0, 500);
       if (!title || !promptText || !imageUrl) { skipped++; continue; }
 
-      const category = inferCategory(title, (p.description || '') + ' ' + promptText);
+      const category = inferCategory(title, (p.description || '') + ' ' + promptText.substring(0, 500));
+      const isFeatured = p.featured ? 1 : 0;
+      const likes = p.likes || 0;
+
+      // Use INSERT OR REPLACE to update existing content (title, description, promptText, imageUrl, category, likes, featured)
       stmts.push({
-        sql: "INSERT OR IGNORE INTO Prompt (id, title, description, promptText, imageUrl, category, authorName, likeCount, viewCount, isFeatured, source, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%SZ', 'now'), strftime('%Y-%m-%dT%H:%M:%SZ', 'now'))",
+        sql: `INSERT OR REPLACE INTO Prompt (id, title, description, promptText, imageUrl, category, authorName, likeCount, viewCount, isFeatured, source, createdAt, updatedAt)
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                COALESCE((SELECT createdAt FROM Prompt WHERE id = ?), strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
+                strftime('%Y-%m-%dT%H:%M:%SZ', 'now'))`,
         args: [
           t('ym_' + p.id), t(title), t((p.description || '').substring(0, 500) || null),
           t(promptText), t(imageUrl), t(category),
           t((p.author?.name || '匿名用户').substring(0, 50)),
-          ti(p.likes || 0), ti(0), ti(p.featured ? 1 : 0), t('youmind'),
+          ti(likes), ti(0), ti(isFeatured), t('youmind'),
+          t('ym_' + p.id), // for COALESCE subquery
         ],
       });
     }
@@ -140,11 +174,18 @@ async function main() {
       }
     }
 
-    console.log(`  Progress: inserted=${inserted} skipped=${skipped} errors=${errors}`);
-    if (page < pages) await new Promise(r => setTimeout(r, 300));
+    console.log(`  Progress: processed=${inserted} skipped=${skipped} errors=${errors}`);
+    if (page < endPage) await new Promise(r => setTimeout(r, 300));
   }
 
-  console.log(`\nDone! Inserted: ${inserted}, Skipped: ${skipped}, Errors: ${errors}`);
+  // Save sync state
+  saveState({
+    lastSyncAt: new Date().toISOString(),
+    lastTotalFetched: total,
+  });
+
+  console.log(`\nDone! Processed: ${inserted}, Skipped: ${skipped}, Errors: ${errors}`);
+  console.log(`Mode: ${MODE}, State saved to ${STATE_FILE}`);
 }
 
 main().catch(console.error);

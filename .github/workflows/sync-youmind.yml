@@ -1,0 +1,38 @@
+name: Sync Youmind Prompts
+
+on:
+  schedule:
+    - cron: '0 6 * * *'  # Daily at 6:00 AM UTC (2:00 PM CST)
+  workflow_dispatch:      # Manual trigger
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: imap
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: imap/package-lock.json
+
+      - run: npm ci
+
+      - name: Sync youmind data (incremental)
+        env:
+          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
+          SYNC_MODE: incremental
+        run: npx tsx scripts/sync-youmind.ts
+
+      - name: Sync youmind data (full, weekly)
+        if: github.event_name == 'schedule' && format('{0}', github.run_attempt) == '1'
+        env:
+          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
+          SYNC_MODE: full
+        run: npx tsx scripts/sync-youmind.ts
