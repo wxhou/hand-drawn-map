@@ -114,10 +114,12 @@ function HomeContent() {
     fetchPrompts(1, true);
   };
 
-  const handleRandom = () => {
-    if (prompts.length === 0) return;
-    const idx = Math.floor(Math.random() * prompts.length);
-    setSelectedPrompt(prompts[idx]);
+  const handleRandom = async () => {
+    try {
+      const res = await fetch('/api/prompts?random=1');
+      const data = await res.json();
+      if (data.prompts?.[0]) setSelectedPrompt(data.prompts[0]);
+    } catch { /* ignore */ }
   };
 
   return (

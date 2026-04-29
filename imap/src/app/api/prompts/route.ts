@@ -22,6 +22,16 @@ export async function GET(request: NextRequest) {
       ];
     }
 
+    const random = searchParams.get('random') === '1';
+
+    if (random) {
+      const total = await db.prompt.count({ where });
+      if (total === 0) return NextResponse.json({ prompts: [], total: 0 });
+      const offset = Math.floor(Math.random() * total);
+      const prompts = await db.prompt.findMany({ where, skip: offset, take: 1 });
+      return NextResponse.json({ prompts, total, page: 1, limit: 1 });
+    }
+
     const [prompts, total] = await Promise.all([
       db.prompt.findMany({
         where,
