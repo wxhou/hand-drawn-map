@@ -1,11 +1,14 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { PromptCard, SkeletonCard } from '@/components/PromptCard';
 import { CategoryTags } from '@/components/CategoryTags';
 import { SearchBar } from '@/components/SearchBar';
 import { PromptModal } from '@/components/PromptModal';
+
+const PAGE_SIZE = 100;
 
 interface Prompt {
   id: string;
@@ -28,29 +31,25 @@ export default function Gallery() {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [total, setTotal] = useState(0);
   const [activeCategory, setActiveCategory] = useState('全部');
   const [searchValue, setSearchValue] = useState('');
   const [selectedPrompt, setSelectedPrompt] = useState<Prompt | null>(null);
-  const observerRef = useRef<IntersectionObserver | null>(null);
-  const loadMoreRef = useRef<HTMLDivElement>(null);
 
-  const fetchPrompts = useCallback(async (pageNum: number, reset = false) => {
+  const fetchPrompts = useCallback(async (pageNum: number) => {
     setLoading(true);
     try {
       const params = new URLSearchParams();
       params.set('page', pageNum.toString());
-      params.set('limit', '12');
+      params.set('limit', PAGE_SIZE.toString());
       if (activeCategory !== '全部') params.set('category', activeCategory);
       if (searchValue) params.set('search', searchValue);
 
       const res = await fetch(`/api/prompts?${params.toString()}`);
       const data = await res.json();
-      if (reset) {
-        setPrompts(data.prompts || []);
-      } else {
-        setPrompts((prev) => [...prev, ...(data.prompts || [])]);
-      }
-      setTotalPages(Math.ceil((data.total || 0) / 12));
+      setPrompts(data.prompts || []);
+      setTotal(data.total || 0);
+      setTotalPages(Math.ceil((data.total || 0) / PAGE_SIZE));
     } catch (err) {
       console.error(err);
     } finally {
@@ -60,30 +59,18 @@ export default function Gallery() {
 
   useEffect(() => {
     setPage(1);
-    fetchPrompts(1, true);
+    fetchPrompts(1);
   }, [fetchPrompts]);
-
-  useEffect(() => {
-    if (!loadMoreRef.current) return;
-    observerRef.current = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && !loading && page < totalPages) {
-          setPage((prev) => prev + 1);
-        }
-      },
-      { threshold: 0.1 }
-    );
-    observerRef.current.observe(loadMoreRef.current);
-    return () => observerRef.current?.disconnect();
-  }, [loading, page, totalPages]);
-
-  useEffect(() => {
-    if (page > 1) fetchPrompts(page);
-  }, [page, fetchPrompts]);
 
   const handleSearch = () => {
     setPage(1);
-    fetchPrompts(1, true);
+    fetchPrompts(1);
+  };
+
+  const goToPage = (p: number) => {
+    setPage(p);
+    fetchPrompts(p);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleRandom = async () => {
@@ -152,7 +139,39 @@ export default function Gallery() {
             </>
           )}
         </div>
-        <div ref={loadMoreRef} className="h-10" />
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 16,
+            padding: '48px 0 0',
+          }}>
+            <button
+              onClick={() => goToPage(page - 1)}
+              disabled={page <= 1 || loading}
+              className="btn-secondary"
+              style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '10px 20px', borderRadius: 8, opacity: page <= 1 ? 0.4 : 1 }}
+            >
+              <ChevronLeft className="w-4 h-4" />
+              上一页
+            </button>
+            <span style={{ color: 'var(--text-secondary)', fontSize: 13, letterSpacing: '0.04em' }}>
+              {page} / {totalPages}
+            </span>
+            <button
+              onClick={() => goToPage(page + 1)}
+              disabled={page >= totalPages || loading}
+              className="btn-secondary"
+              style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '10px 20px', borderRadius: 8, opacity: page >= totalPages ? 0.4 : 1 }}
+            >
+              下一页
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        )}
       </section>
 
       <PromptModal

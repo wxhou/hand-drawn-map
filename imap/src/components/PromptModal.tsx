@@ -2,8 +2,9 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Copy, Check, Heart, Share2, Eye } from 'lucide-react';
+import { X, Copy, Check, Heart, Share2, Eye, Bookmark, BookmarkCheck } from 'lucide-react';
 import { useToast } from '@/components/ui/Toast';
+import { useSession } from 'next-auth/react';
 
 const LIKES_KEY = 'imap_liked_ids';
 
@@ -43,6 +44,8 @@ export function PromptModal({ prompt, onClose, onLikeChange }: PromptModalProps)
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
   const [viewCount, setViewCount] = useState(0);
+  const [favorited, setFavorited] = useState(false);
+  const { data: session } = useSession();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -50,6 +53,15 @@ export function PromptModal({ prompt, onClose, onLikeChange }: PromptModalProps)
       setLiked(getLikedIds().has(prompt.id));
       setLikeCount(prompt.likeCount);
       setViewCount(prompt.viewCount);
+      // Check favorite status
+      if (session?.user?.id) {
+        fetch('/api/favorites/check?promptId=' + prompt.id)
+          .then(r => r.json())
+          .then(data => setFavorited(data.favorited))
+          .catch(() => {});
+      } else {
+        setFavorited(false);
+      }
       // Increment view count
       fetch(`/api/prompts/${prompt.id}`).then(r => r.json()).then(data => {
         if (data.viewCount !== undefined) setViewCount(data.viewCount);
@@ -75,6 +87,22 @@ export function PromptModal({ prompt, onClose, onLikeChange }: PromptModalProps)
   }, [prompt]);
 
   const promptId = prompt?.id ?? '';
+
+  const handleFavorite = useCallback(async () => {
+    if (!promptId || !session?.user?.id) return;
+    try {
+      const res = await fetch('/api/favorites', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ promptId }),
+      });
+      const data = await res.json();
+      setFavorited(data.favorited);
+      toast(data.favorited ? '已收藏' : '已取消收藏', 'success');
+    } catch {
+      toast('操作失败', 'error');
+    }
+  }, [promptId, session, toast]);
 
   const handleLike = useCallback(async () => {
     if (!promptId) return;
@@ -303,6 +331,20 @@ export function PromptModal({ prompt, onClose, onLikeChange }: PromptModalProps)
                 >
                   <Share2 className="w-4 h-4" />
                 </button>
+                {session?.user && (
+                  <button
+                    onClick={handleFavorite}
+                    className="btn-secondary px-4 py-3"
+                    style={{ borderRadius: 8 }}
+                    title={favorited ? '取消收藏' : '收藏'}
+                  >
+                    {favorited ? (
+                      <BookmarkCheck className="w-4 h-4" style={{ color: 'var(--accent)' }} />
+                    ) : (
+                      <Bookmark className="w-4 h-4" />
+                    )}
+                  </button>
+                )}
               </div>
             </div>
           </div>

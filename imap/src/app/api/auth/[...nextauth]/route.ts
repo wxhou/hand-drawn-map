@@ -1,9 +1,41 @@
-import { NextResponse } from 'next/server';
+import NextAuth, { type NextAuthOptions } from 'next-auth';
+import GoogleProvider from 'next-auth/providers/google';
+import GithubProvider from 'next-auth/providers/github';
+import { PrismaAdapter } from '@next-auth/prisma-adapter';
+import { db } from '@/lib/db';
 
-export async function GET() {
-  return NextResponse.json({ expires: new Date(Date.now() + 86400 * 1000).toISOString() });
-}
+export const authOptions: NextAuthOptions = {
+  adapter: PrismaAdapter(db),
+  providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID || '',
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+    }),
+    GithubProvider({
+      clientId: process.env.GITHUB_CLIENT_ID || '',
+      clientSecret: process.env.GITHUB_CLIENT_SECRET || '',
+    }),
+  ],
+  session: { strategy: 'jwt' },
+  pages: {
+    signIn: '/auth/signin',
+  },
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (session.user && token.id) {
+        session.user.id = token.id as string;
+      }
+      return session;
+    },
+  },
+  secret: process.env.NEXTAUTH_SECRET,
+};
 
-export async function POST() {
-  return NextResponse.json({ expires: new Date(Date.now() + 86400 * 1000).toISOString() });
-}
+const handler = NextAuth(authOptions);
+export { handler as GET, handler as POST };

@@ -3,13 +3,59 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Upload, Image, Code, Check, AlertCircle } from 'lucide-react';
+import { Upload, Code, Check, AlertCircle, FileText, Tags, ImagePlus, MessageSquare, User } from 'lucide-react';
 import { CategoryTags } from '@/components/CategoryTags';
 
-const CATEGORIES = [
-  '个人资料 / 头像', '社交媒体帖子', '信息图 / 教育视觉图',
-  'YouTube 缩略图', '漫画 / 故事板', '海报 / 传单', 'APP / 网页设计',
-];
+const ink = {
+  initial: { opacity: 0, y: 28 },
+  animate: (delay: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { delay, duration: 0.7, ease: 'easeOut' as const },
+  }),
+};
+
+function Section({ icon: Icon, title, required, children }: {
+  icon: React.ElementType; title: string; required?: boolean; children: React.ReactNode;
+}) {
+  return (
+    <motion.div
+      custom={0}
+      variants={ink}
+      initial="initial"
+      animate="animate"
+    >
+      <div style={{ marginBottom: 12 }}>
+        <div className="flex items-center gap-2.5">
+          <Icon style={{ width: 14, height: 14, color: required ? 'var(--accent)' : 'var(--text-tertiary)' }} />
+          <span
+            style={{
+              fontSize: 13,
+              fontWeight: 600,
+              color: 'var(--text-primary)',
+              fontFamily: 'var(--font-serif)',
+              letterSpacing: '0.04em',
+            }}
+          >
+            {title}
+          </span>
+          {required && (
+            <span
+              style={{
+                display: 'inline-block',
+                width: 5,
+                height: 5,
+                borderRadius: '50%',
+                background: 'var(--accent)',
+              }}
+            />
+          )}
+        </div>
+      </div>
+      {children}
+    </motion.div>
+  );
+}
 
 export default function SubmitPage() {
   const router = useRouter();
@@ -55,14 +101,10 @@ export default function SubmitPage() {
         }),
       });
 
-      if (!res.ok) {
-        throw new Error('提交失败');
-      }
+      if (!res.ok) throw new Error('提交失败');
 
       setStatus('success');
-      setTimeout(() => {
-        router.push('/');
-      }, 2000);
+      setTimeout(() => { router.push('/'); }, 2000);
     } catch (err) {
       setErrorMsg(err instanceof Error ? err.message : '提交失败，请重试');
       setStatus('error');
@@ -75,218 +117,278 @@ export default function SubmitPage() {
     try {
       const parsed = JSON.parse(promptText);
       setPromptText(JSON.stringify(parsed, null, 2));
-    } catch {
-      // ignore
-    }
+    } catch { /* ignore */ }
   };
 
+  const filledCount = [title, category, promptText, imageUrl].filter(Boolean).length;
+
   return (
-    <div className="min-h-screen" style={{ padding: '100px 24px 80px', maxWidth: 720, margin: '0 auto' }}>
+    <div className="min-h-screen" style={{ padding: '80px 20px 100px', maxWidth: 640, margin: '0 auto' }}>
       {/* Header */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-center mb-10"
+        custom={0}
+        variants={ink}
+        initial="initial"
+        animate="animate"
+        style={{ marginBottom: 48 }}
       >
-        <div
-          className="inline-flex items-center gap-3 mb-4 px-5 py-2 rounded-full"
-          style={{ backgroundColor: 'var(--bg-secondary)', border: '1px solid var(--border)' }}
+        <h1
+          style={{
+            fontFamily: 'var(--font-serif)',
+            fontSize: 'clamp(1.5rem, 4vw, 2rem)',
+            fontWeight: 700,
+            color: 'var(--text-primary)',
+            letterSpacing: '0.04em',
+            lineHeight: 1.4,
+            marginBottom: 12,
+          }}
         >
-          <Upload className="w-5 h-5" style={{ color: '#B24592' }} />
-          <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
-            贡献你的创意
-          </span>
-        </div>
-        <h1 className="text-4xl font-bold mb-3">
-          <span className="gradient-text">提交提示词</span>
+          投稿
         </h1>
-        <p className="text-base" style={{ color: 'var(--text-secondary)' }}>
-          分享你的 GPT Image 2 提示词，帮助更多人创作出精彩的 AI 图像
+        <p
+          style={{
+            color: 'var(--text-secondary)',
+            fontSize: 14,
+            lineHeight: 1.8,
+            maxWidth: 320,
+          }}
+        >
+          分享你的 GPT Image 2 提示词
         </p>
+        {/* Progress */}
+        <div className="flex items-center gap-1.5 mt-5">
+          {[0, 1, 2, 3].map((i) => (
+            <div
+              key={i}
+              className="rounded-full"
+              style={{
+                width: i < filledCount ? 20 : 5,
+                height: 5,
+                background: i < filledCount ? 'var(--accent)' : 'rgba(232, 228, 223, 0.06)',
+                transition: 'all 0.5s var(--ease-ink)',
+              }}
+            />
+          ))}
+        </div>
       </motion.div>
+
+      {/* Divider */}
+      <div
+        style={{
+          height: 1,
+          background: 'linear-gradient(90deg, transparent, var(--border-hover) 30%, var(--border-hover) 70%, transparent)',
+          marginBottom: 36,
+        }}
+      />
 
       {/* Form */}
       <motion.form
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
         onSubmit={handleSubmit}
-        className="space-y-6"
+        className="space-y-8"
       >
-        {/* Title */}
-        <div>
-          <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-primary)' }}>
-            标题 <span style={{ color: '#F15F79' }}>*</span>
-          </label>
-          <input
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="例如：赛博朋克城市夜景海报"
-            className="input-dark"
-            required
-          />
-        </div>
-
-        {/* Description */}
-        <div>
-          <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-primary)' }}>
-            描述
-          </label>
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="简要描述这个提示词的效果和用途..."
-            className="input-dark"
-            rows={3}
-            style={{ resize: 'vertical' }}
-          />
-        </div>
+        {/* Basic Info */}
+        <Section icon={FileText} title="基本信息" required>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-xs mb-1.5" style={{ color: 'var(--text-tertiary)', letterSpacing: '0.04em' }}>
+                标题
+              </label>
+              <input
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="例如：赛博朋克城市夜景海报"
+                className="input-dark"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-xs mb-1.5" style={{ color: 'var(--text-tertiary)', letterSpacing: '0.04em' }}>
+                描述
+              </label>
+              <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="简要描述这个提示词的效果和用途..."
+                className="textarea-dark"
+                rows={3}
+              />
+            </div>
+          </div>
+        </Section>
 
         {/* Category */}
-        <div>
-          <label className="block text-sm font-medium mb-3" style={{ color: 'var(--text-primary)' }}>
-            分类 <span style={{ color: '#F15F79' }}>*</span>
-          </label>
-          <div className="flex flex-wrap gap-2">
-            {CATEGORIES.map((cat) => (
-              <button
-                key={cat}
-                type="button"
-                onClick={() => setCategory(cat)}
-                className="px-4 py-2 rounded-full text-sm font-medium transition-all"
+        <Section icon={Tags} title="分类" required>
+          <CategoryTags activeCategory={category} onSelect={setCategory} showAll={false} />
+        </Section>
+
+        {/* Visual */}
+        <Section icon={ImagePlus} title="视觉素材" required>
+          <div className="space-y-3">
+            <div>
+              <label className="block text-xs mb-1.5" style={{ color: 'var(--text-tertiary)', letterSpacing: '0.04em' }}>
+                图片 URL
+              </label>
+              <input
+                type="url"
+                value={imageUrl}
+                onChange={(e) => handleImageUrlChange(e.target.value)}
+                placeholder="https://example.com/your-image.jpg"
+                className="input-dark"
+                required
+              />
+            </div>
+            {imagePreview && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5 }}
+                className="relative rounded-lg overflow-hidden"
                 style={{
-                  backgroundColor: category === cat ? 'var(--accent-gradient)' : 'var(--bg-tertiary)',
-                  color: category === cat ? 'white' : 'var(--text-secondary)',
-                  border: category === cat ? 'none' : '1px solid var(--border)',
+                  border: '1px solid var(--border)',
+                  maxHeight: 240,
                 }}
               >
-                {cat}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Image URL */}
-        <div>
-          <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-primary)' }}>
-            图片 URL <span style={{ color: '#F15F79' }}>*</span>
-          </label>
-          <div className="space-y-3">
-            <input
-              type="url"
-              value={imageUrl}
-              onChange={(e) => handleImageUrlChange(e.target.value)}
-              placeholder="https://example.com/your-image.jpg"
-              className="input-dark"
-              required
-            />
-            {imagePreview && (
-              <div className="relative rounded-xl overflow-hidden" style={{ maxHeight: 300 }}>
                 <img
                   src={imagePreview}
                   alt="预览"
                   className="w-full object-cover"
-                  style={{ maxHeight: 300 }}
+                  style={{ maxHeight: 240 }}
                   onError={() => setImagePreview('')}
                 />
+              </motion.div>
+            )}
+            {!imagePreview && (
+              <div
+                className="flex flex-col items-center justify-center rounded-lg py-10"
+                style={{
+                  border: '1px dashed rgba(232,228,223,0.08)',
+                  backgroundColor: 'var(--bg-secondary)',
+                }}
+              >
+                <ImagePlus className="w-6 h-6 mb-2" style={{ color: 'var(--text-tertiary)', opacity: 0.4 }} />
+                <p className="text-xs" style={{ color: 'var(--text-tertiary)', opacity: 0.5 }}>
+                  输入图片 URL 后在此预览
+                </p>
               </div>
             )}
           </div>
-        </div>
+        </Section>
 
         {/* Prompt Text */}
-        <div>
-          <div className="flex items-center justify-between mb-2">
-            <label className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
-              提示词 <span style={{ color: '#F15F79' }}>*</span>
-            </label>
-            <button
-              type="button"
-              onClick={parsePromptJson}
-              className="text-xs px-3 py-1 rounded-full flex items-center gap-1"
-              style={{ backgroundColor: 'var(--bg-tertiary)', color: 'var(--text-secondary)' }}
-            >
-              <Code className="w-3 h-3" />
-              格式化 JSON
-            </button>
+        <Section icon={MessageSquare} title="提示词" required>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <label className="text-xs" style={{ color: 'var(--text-tertiary)', letterSpacing: '0.04em' }}>
+                提示词文本
+              </label>
+              <button
+                type="button"
+                onClick={parsePromptJson}
+                className="text-xs px-2.5 py-1 rounded flex items-center gap-1.5 transition-colors"
+                style={{
+                  backgroundColor: 'var(--accent-muted)',
+                  border: '1px solid var(--accent-border)',
+                  color: 'var(--accent)',
+                }}
+              >
+                <Code className="w-3 h-3" />
+                格式化
+              </button>
+            </div>
+            <textarea
+              value={promptText}
+              onChange={(e) => setPromptText(e.target.value)}
+              placeholder={'{\n  "type": "海报设计",\n  "subject": "...",\n  "style": "..."\n}'}
+              className="textarea-dark font-mono text-sm"
+              rows={10}
+              style={{ fontFamily: 'var(--font-mono)' }}
+              required
+            />
+            <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>
+              支持 JSON 或纯文本
+            </p>
           </div>
-          <textarea
-            value={promptText}
-            onChange={(e) => setPromptText(e.target.value)}
-            placeholder={'{\n  "type": "海报设计",\n  "subject": "...",\n  "style": "..."\n}'}
-            className="input-dark font-mono text-sm"
-            rows={10}
-            style={{ resize: 'vertical', fontFamily: 'var(--font-geist-mono), monospace' }}
-            required
-          />
-          <p className="text-xs mt-1" style={{ color: 'var(--text-secondary)' }}>
-            支持 JSON 格式或纯文本提示词
-          </p>
-        </div>
+        </Section>
 
-        {/* Author Name */}
-        <div>
-          <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-primary)' }}>
-            昵称（游客提交）
-          </label>
-          <input
-            type="text"
-            value={authorName}
-            onChange={(e) => setAuthorName(e.target.value)}
-            placeholder="输入你的昵称（选填）"
-            className="input-dark"
-          />
-        </div>
+        {/* Author */}
+        <Section icon={User} title="署名">
+          <div>
+            <label className="block text-xs mb-1.5" style={{ color: 'var(--text-tertiary)', letterSpacing: '0.04em' }}>
+              昵称（选填）
+            </label>
+            <input
+              type="text"
+              value={authorName}
+              onChange={(e) => setAuthorName(e.target.value)}
+              placeholder="默认匿名"
+              className="input-dark"
+            />
+          </div>
+        </Section>
 
-        {/* Status Messages */}
+        {/* Status */}
         {status === 'success' && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="flex items-center gap-3 p-4 rounded-xl"
-            style={{ backgroundColor: 'rgba(34, 197, 94, 0.1)', border: '1px solid rgba(34, 197, 94, 0.3)' }}
+            className="flex items-center gap-3 p-4 rounded-lg"
+            style={{ backgroundColor: 'rgba(34, 197, 94, 0.06)', border: '1px solid rgba(34, 197, 94, 0.15)' }}
           >
-            <Check className="w-5 h-5" style={{ color: '#22c55e' }} />
-            <span style={{ color: '#22c55e' }}>提交成功！正在跳转...</span>
+            <Check className="w-4 h-4" style={{ color: '#22c55e' }} />
+            <span className="text-sm" style={{ color: '#22c55e' }}>提交成功，正在跳转...</span>
           </motion.div>
         )}
-
         {status === 'error' && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="flex items-center gap-3 p-4 rounded-xl"
-            style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.3)' }}
+            className="flex items-center gap-3 p-4 rounded-lg"
+            style={{ backgroundColor: 'rgba(196, 69, 58, 0.06)', border: '1px solid var(--accent-border)' }}
           >
-            <AlertCircle className="w-5 h-5" style={{ color: '#ef4444' }} />
-            <span style={{ color: '#ef4444' }}>{errorMsg}</span>
+            <AlertCircle className="w-4 h-4" style={{ color: 'var(--accent)' }} />
+            <span className="text-sm" style={{ color: 'var(--accent)' }}>{errorMsg}</span>
           </motion.div>
         )}
 
-        {/* Submit Button */}
-        <button
-          type="submit"
-          disabled={submitting}
-          className="btn-primary w-full justify-center py-4 text-base disabled:opacity-50"
+        {/* Submit */}
+        <motion.div
+          custom={0.3}
+          variants={ink}
+          initial="initial"
+          animate="animate"
+          style={{ paddingTop: 8 }}
         >
-          {submitting ? (
-            <>
-              <span className="animate-spin">
-                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                </svg>
-              </span>
-              提交中...
-            </>
-          ) : (
-            <>
-              <Upload className="w-5 h-5" />
-              提交提示词
-            </>
-          )}
-        </button>
+          <button
+            type="submit"
+            disabled={submitting}
+            className="w-full py-4 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 transition-colors disabled:opacity-40"
+            style={{
+              background: 'var(--accent)',
+              color: '#f5f0eb',
+              border: 'none',
+              cursor: submitting ? 'wait' : 'pointer',
+              letterSpacing: '0.04em',
+            }}
+          >
+            {submitting ? (
+              <>
+                <span className="animate-spin">
+                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                  </svg>
+                </span>
+                提交中
+              </>
+            ) : (
+              <>
+                <Upload className="w-4 h-4" />
+                提交
+              </>
+            )}
+          </button>
+        </motion.div>
       </motion.form>
     </div>
   );

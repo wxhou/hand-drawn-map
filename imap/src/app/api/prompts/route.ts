@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { findCategoryForSearch } from '@/lib/search-synonyms';
 
 export async function GET(request: NextRequest) {
   try {
@@ -11,15 +12,39 @@ export async function GET(request: NextRequest) {
     const skip = (page - 1) * limit;
 
     const where: Record<string, unknown> = {};
-    if (category && category !== '全部') {
-      where.category = category;
-    }
+
     if (search) {
-      where.OR = [
-        { title: { contains: search } },
-        { description: { contains: search } },
-        { promptText: { contains: search } },
-      ];
+      const words = search.trim().split(/\s+/);
+
+      // Collect categories that match search terms
+      const matchedCategories: string[] = [];
+      for (const word of words) {
+        const cat = findCategoryForSearch(word);
+        if (cat) matchedCategories.push(cat);
+      }
+      const uniqueCategories = [...new Set(matchedCategories)];
+
+      if (uniqueCategories.length > 0 && !category) {
+        // Search term maps to a category — use category filter (indexed, fast)
+        // PLUS text search across all categories for non-category matches
+        where.OR = [
+          ...uniqueCategories.map(c => ({ category: c })),
+          ...words.flatMap(word => [
+            { title: { contains: word } },
+            { description: { contains: word } },
+            { promptText: { contains: word } },
+          ]),
+        ];
+      } else {
+        // No category match — simple text search
+        where.OR = words.flatMap(word => [
+          { title: { contains: word } },
+          { description: { contains: word } },
+          { promptText: { contains: word } },
+        ]);
+      }
+    } else if (category && category !== '全部') {
+      where.category = category;
     }
 
     const random = searchParams.get('random') === '1';

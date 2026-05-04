@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Noto_Serif_SC, Noto_Sans_SC } from 'next/font/google';
-import { SessionProvider } from "next-auth/react";
+import { AuthProvider } from "@/components/auth/AuthProvider";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
@@ -44,9 +44,9 @@ export default function RootLayout({
       </head>
       <body
         className={`${geistSans.variable} ${notoSerifSC.variable} ${notoSansSC.variable} antialiased min-h-screen flex flex-col`}
-        style={{ backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }}
+        style={{ backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)', position: 'relative' }}
       >
-        <SessionProvider>
+        <AuthProvider>
           <ErrorBoundary>
             <ToastProvider>
               <Header />
@@ -56,7 +56,7 @@ export default function RootLayout({
               <AgentationWrapper />
             </ToastProvider>
           </ErrorBoundary>
-        </SessionProvider>
+        </AuthProvider>
       </body>
     </html>
   );

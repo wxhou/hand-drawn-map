@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { motion } from 'framer-motion';
 import { Search, Shuffle, X } from 'lucide-react';
+
+const HOT_SEARCHES = ['头像', '海报', '漫画', '3D', 'LOGO', '信息图', '可爱', '中国风'];
 
 interface SearchBarProps {
   value: string;
@@ -29,25 +30,26 @@ export function SearchBar({
     }
   };
 
+  const handleHotSearch = (term: string) => {
+    onChange(term);
+    // Auto-trigger search after setting value
+    setTimeout(() => onSearch(), 0);
+  };
+
   return (
     <div className="relative max-w-xl mx-auto">
-      <motion.div
-        animate={{ boxShadow: focused
-          ? '0 0 0 2px rgba(178,69,146,0.4), 0 12px 40px rgba(0,0,0,0.5), 0 0 60px rgba(178,69,146,0.15)'
-          : '0 4px 20px rgba(0,0,0,0.3)'
-        }}
-        transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-        className="relative flex items-center rounded-2xl overflow-hidden"
+      <div
+        className="relative flex items-center rounded-lg overflow-hidden"
         style={{
-          backgroundColor: 'rgba(19, 19, 26, 0.8)',
-          backdropFilter: 'blur(12px)',
-          WebkitBackdropFilter: 'blur(12px)',
-          border: focused ? '1.5px solid rgba(178,69,146,0.6)' : '1.5px solid var(--border)',
+          backgroundColor: 'var(--bg-secondary)',
+          border: focused ? '1px solid var(--accent-border)' : '1px solid var(--border)',
+          transition: 'border-color 0.3s var(--ease-ink), box-shadow 0.3s var(--ease-ink)',
+          boxShadow: focused ? '0 0 0 3px rgba(196, 69, 58, 0.06)' : 'none',
         }}
       >
         <Search
-          className="w-5 h-5 ml-5 shrink-0"
-          style={{ color: focused ? '#B24592' : 'var(--text-secondary)' }}
+          className="w-4 h-4 ml-4 shrink-0"
+          style={{ color: focused ? 'var(--accent)' : 'var(--text-tertiary)', transition: 'color 0.3s' }}
         />
         <input
           type="text"
@@ -57,39 +59,73 @@ export function SearchBar({
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
           placeholder={placeholder}
-          className="flex-1 px-4 py-4 text-sm outline-none bg-transparent placeholder:"
+          className="flex-1 px-4 py-3.5 text-sm outline-none bg-transparent"
           style={{
             color: 'var(--text-primary)',
             backgroundColor: 'transparent',
+            fontFamily: 'var(--font-sans)',
           }}
         />
         {value && (
           <button
             onClick={() => onChange('')}
-            className="p-2 mr-1 rounded-full transition-colors hover:bg-[var(--bg-tertiary)]"
-            style={{ color: 'var(--text-secondary)' }}
+            className="p-1.5 mr-1 rounded transition-colors"
+            style={{ color: 'var(--text-tertiary)' }}
           >
-            <X className="w-4 h-4" />
+            <X className="w-3.5 h-3.5" />
           </button>
         )}
         {onRandom && (
           <button
             onClick={onRandom}
-            className="px-4 py-2 mr-2 rounded-xl text-sm font-medium transition-all hover:scale-105 active:scale-95"
-            style={{ background: 'var(--accent-gradient)', color: 'white', border: 'none' }}
+            className="px-3 py-1.5 mr-2 rounded text-xs font-medium transition-colors"
+            style={{ color: 'var(--text-secondary)', border: '1px solid var(--border)' }}
             title="随机体验"
           >
-            <Shuffle className="w-4 h-4" />
+            <Shuffle className="w-3.5 h-3.5" />
           </button>
         )}
         <button
           onClick={onSearch}
-          className="px-5 py-4 font-medium text-sm transition-all hover:brightness-110 active:scale-95"
-          style={{ background: 'var(--accent-gradient)', color: 'white', border: 'none', borderRadius: '0 14px 14px 0', height: '100%' }}
+          className="px-5 py-3.5 text-sm font-medium transition-colors"
+          style={{
+            background: 'var(--accent)',
+            color: '#f5f0eb',
+            border: 'none',
+            borderRadius: '0 7px 7px 0',
+            height: '100%',
+            letterSpacing: '0.04em',
+          }}
         >
           搜索
         </button>
-      </motion.div>
+      </div>
+
+      {/* Hot search tags — visible when input is empty and focused */}
+      {!value && focused && (
+        <div
+          className="flex flex-wrap gap-2 mt-3 justify-center"
+          style={{ animation: 'fadeIn 0.2s ease-out' }}
+        >
+          {HOT_SEARCHES.map((term) => (
+            <button
+              key={term}
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => handleHotSearch(term)}
+              className="px-3 py-1 rounded text-xs transition-colors cursor-pointer"
+              style={{
+                color: 'var(--text-secondary)',
+                border: '1px solid var(--border)',
+                backgroundColor: 'transparent',
+                fontFamily: 'var(--font-sans)',
+                letterSpacing: '0.02em',
+              }}
+            >
+              {term}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
