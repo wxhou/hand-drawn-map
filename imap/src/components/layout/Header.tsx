@@ -3,13 +3,15 @@
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useSession, signIn, signOut } from 'next-auth/react';
-import { Upload, Heart, User, LogOut, ChevronDown } from 'lucide-react';
+import { Upload, Heart, User, LogOut, ChevronDown, Sun, Moon, Monitor } from 'lucide-react';
+import { useTheme } from '@/components/auth/ThemeProvider';
 
 export function Header() {
   const { data: session } = useSession();
   const user = session?.user;
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const { theme, setTheme } = useTheme();
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -26,7 +28,7 @@ export function Header() {
     <header
       className="fixed top-0 left-0 right-0 z-50"
       style={{
-        backgroundColor: 'rgba(13, 12, 11, 0.92)',
+        backgroundColor: 'var(--header-bg)',
         borderBottom: '1px solid var(--border)',
       }}
     >
@@ -55,6 +57,23 @@ export function Header() {
         </Link>
 
         <div className="flex items-center gap-3">
+          {/* Theme toggle */}
+          <button
+            onClick={() => {
+              const next = theme === 'system'
+                ? 'light'
+                : theme === 'light'
+                  ? 'dark'
+                  : 'system';
+              setTheme(next);
+            }}
+            className="p-2 rounded-md transition-colors"
+            style={{ color: 'var(--text-tertiary)', border: '1px solid var(--border)' }}
+            title={theme === 'system' ? '跟随系统' : theme === 'light' ? '亮色模式' : '暗色模式'}
+          >
+            {theme === 'light' ? <Sun className="w-3.5 h-3.5" /> : theme === 'dark' ? <Moon className="w-3.5 h-3.5" /> : <Monitor className="w-3.5 h-3.5" />}
+          </button>
+
           <Link href="/submit">
             <button className="btn-primary text-sm py-2 px-5">
               <Upload className="w-3.5 h-3.5" />
@@ -98,7 +117,7 @@ export function Header() {
                   style={{
                     backgroundColor: 'var(--bg-secondary)',
                     border: '1px solid var(--border)',
-                    boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
+                    boxShadow: 'var(--shadow-md)',
                   }}
                 >
                   <div

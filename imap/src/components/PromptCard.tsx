@@ -34,16 +34,16 @@ export function PromptCard({ prompt, index, onClick }: PromptCardProps) {
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
-        boxShadow: '0 2px 12px rgba(0,0,0,0.2)',
+        boxShadow: 'var(--shadow-sm)',
         transition: 'transform 0.5s var(--ease-ink), box-shadow 0.5s var(--ease-ink)',
       }}
       onMouseEnter={(e) => {
         (e.currentTarget as HTMLElement).style.transform = 'translateY(-3px)';
-        (e.currentTarget as HTMLElement).style.boxShadow = '0 8px 24px rgba(0,0,0,0.3)';
+        (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow-md)';
       }}
       onMouseLeave={(e) => {
         (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
-        (e.currentTarget as HTMLElement).style.boxShadow = '0 2px 12px rgba(0,0,0,0.2)';
+        (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow-sm)';
       }}
     >
       <button
@@ -70,7 +70,7 @@ export function PromptCard({ prompt, index, onClick }: PromptCardProps) {
               borderRadius: 4,
               fontSize: 11,
               fontWeight: 500,
-              backgroundColor: 'rgba(13, 12, 11, 0.75)',
+              backgroundColor: 'var(--overlay-solid)',
               color: 'var(--text-secondary)',
               letterSpacing: '0.04em',
             }}
@@ -88,7 +88,7 @@ export function PromptCard({ prompt, index, onClick }: PromptCardProps) {
                 borderRadius: 4,
                 fontSize: 11,
                 fontWeight: 500,
-                backgroundColor: 'rgba(13, 12, 11, 0.75)',
+                backgroundColor: 'var(--overlay-solid)',
                 color: 'var(--accent)',
                 display: 'flex',
                 alignItems: 'center',

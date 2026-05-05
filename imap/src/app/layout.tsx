@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Noto_Serif_SC, Noto_Sans_SC } from 'next/font/google';
 import { AuthProvider } from "@/components/auth/AuthProvider";
+import { ThemeProvider } from "@/components/auth/ThemeProvider";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
@@ -41,12 +42,14 @@ export default function RootLayout({
     <html lang="zh-CN" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/favicon.ico" />
+        <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('imap-theme');var r=t==='system'||!t?(window.matchMedia('(prefers-color-scheme:light)').matches?'light':'dark'):(t==='light'?'light':'dark');document.documentElement.setAttribute('data-theme',r)}catch(e){}})()` }} />
       </head>
       <body
         className={`${geistSans.variable} ${notoSerifSC.variable} ${notoSansSC.variable} antialiased min-h-screen flex flex-col`}
         style={{ backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)', position: 'relative' }}
       >
-        <AuthProvider>
+        <ThemeProvider>
+          <AuthProvider>
           <ErrorBoundary>
             <ToastProvider>
               <Header />
@@ -56,7 +59,8 @@ export default function RootLayout({
               <AgentationWrapper />
             </ToastProvider>
           </ErrorBoundary>
-        </AuthProvider>
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

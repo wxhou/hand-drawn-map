@@ -185,7 +185,7 @@ export function PromptModal({ prompt, onClose, onLikeChange }: PromptModalProps)
         exit={{ opacity: 0 }}
         transition={{ duration: 0.3 }}
         className="fixed inset-0 z-50 flex items-center justify-center p-4"
-        style={{ backgroundColor: 'rgba(13, 12, 11, 0.9)' }}
+        style={{ backgroundColor: 'var(--overlay-full)' }}
         onClick={onClose}
       >
         <motion.div
@@ -222,7 +222,7 @@ export function PromptModal({ prompt, onClose, onLikeChange }: PromptModalProps)
               <div
                 className="absolute bottom-4 left-4 px-3 py-1 rounded text-xs font-medium"
                 style={{
-                  backgroundColor: 'rgba(13, 12, 11, 0.75)',
+                  backgroundColor: 'var(--overlay-solid)',
                   color: 'var(--text-secondary)',
                   letterSpacing: '0.04em',
                 }}
