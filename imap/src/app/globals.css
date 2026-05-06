@@ -27,8 +27,8 @@
   --accent-border: rgba(196, 69, 58, 0.25);
 
   /* Shadows & overlays */
-  --shadow-sm: 0 2px 12px rgba(0,0,0,0.2);
-  --shadow-md: 0 8px 24px rgba(0,0,0,0.3);
+  --shadow-sm: 0 2px 12px rgba(0,0,0,0.3);
+  --shadow-md: 0 8px 24px rgba(0,0,0,0.4);
   --header-bg: rgba(13, 12, 11, 0.92);
   --overlay-solid: rgba(13, 12, 11, 0.75);
   --overlay-full: rgba(13, 12, 11, 0.9);
@@ -38,7 +38,9 @@
   --btn-hover-bg: rgba(232, 228, 223, 0.03);
   --scrollbar-thumb: rgba(232, 228, 223, 0.08);
   --scrollbar-thumb-hover: rgba(232, 228, 223, 0.14);
-  --noise-opacity: 0.018;
+  --noise-opacity: 0.03;
+  --card-border: rgba(232, 228, 223, 0.08);
+  --ink-wash: rgba(232, 228, 223, 0.5);
 
   /* Fonts */
   --font-sans: 'Noto Sans SC', system-ui, sans-serif;
@@ -72,8 +74,8 @@
   --accent-muted: rgba(184, 58, 48, 0.08);
   --accent-border: rgba(184, 58, 48, 0.2);
 
-  --shadow-sm: 0 2px 12px rgba(0,0,0,0.06);
-  --shadow-md: 0 8px 24px rgba(0,0,0,0.08);
+  --shadow-sm: 0 2px 12px rgba(0,0,0,0.08);
+  --shadow-md: 0 8px 24px rgba(0,0,0,0.1);
   --header-bg: rgba(247, 245, 242, 0.92);
   --overlay-solid: rgba(255, 255, 255, 0.85);
   --overlay-full: rgba(247, 245, 242, 0.9);
@@ -83,7 +85,9 @@
   --btn-hover-bg: rgba(26, 24, 21, 0.03);
   --scrollbar-thumb: rgba(26, 24, 21, 0.12);
   --scrollbar-thumb-hover: rgba(26, 24, 21, 0.2);
-  --noise-opacity: 0.012;
+  --noise-opacity: 0.025;
+  --card-border: rgba(26, 24, 21, 0.1);
+  --ink-wash: rgba(26, 24, 21, 0.5);
 }
 
 *, *::before, *::after {
@@ -108,18 +112,20 @@ body {
   position: relative;
 }
 
-/* Ink wash atmosphere — subtle texture + warm depth */
+/* Ink wash atmosphere — layered depth + cinnabar glow */
 body::before {
   content: '';
   position: fixed;
   inset: 0;
   background:
-    radial-gradient(ellipse 80% 50% at 20% 0%, rgba(196, 69, 58, 0.02) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 80% 100%, rgba(92, 87, 80, 0.04) 0%, transparent 50%);
+    radial-gradient(ellipse 80% 50% at 20% 0%, rgba(196, 69, 58, 0.03) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 100%, rgba(92, 87, 80, 0.06) 0%, transparent 50%),
+    radial-gradient(circle at 70% 30%, rgba(196, 69, 58, 0.015) 0%, transparent 40%),
+    radial-gradient(circle at 10% 80%, rgba(92, 87, 80, 0.04) 0%, transparent 35%);
   pointer-events: none;
   z-index: 0;
 }
-/* Paper grain — ultra-subtle noise texture */
+/* Rice paper fiber texture — directional noise */
 body::after {
   content: '';
   position: fixed;
@@ -127,9 +133,9 @@ body::after {
   opacity: var(--noise-opacity);
   pointer-events: none;
   z-index: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='5' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-repeat: repeat;
-  background-size: 256px 256px;
+  background-size: 512px 512px;
 }
 
 /* Scrollbar — ink brush stroke feel */

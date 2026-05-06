@@ -34,16 +34,19 @@ export function PromptCard({ prompt, index, onClick }: PromptCardProps) {
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
+        border: '1px solid var(--card-border)',
         boxShadow: 'var(--shadow-sm)',
-        transition: 'transform 0.5s var(--ease-ink), box-shadow 0.5s var(--ease-ink)',
+        transition: 'transform 0.5s var(--ease-ink), box-shadow 0.5s var(--ease-ink), border-color 0.5s var(--ease-ink)',
       }}
       onMouseEnter={(e) => {
         (e.currentTarget as HTMLElement).style.transform = 'translateY(-3px)';
         (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow-md)';
+        (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-hover)';
       }}
       onMouseLeave={(e) => {
         (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
         (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow-sm)';
+        (e.currentTarget as HTMLElement).style.borderColor = 'var(--card-border)';
       }}
     >
       <button
