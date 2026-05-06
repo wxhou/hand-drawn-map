@@ -40,7 +40,7 @@
   --scrollbar-thumb-hover: rgba(232, 228, 223, 0.14);
   --noise-opacity: 0.03;
   --card-border: rgba(232, 228, 223, 0.08);
-  --ink-wash: rgba(232, 228, 223, 0.6);
+  --ink-wash: rgba(232, 228, 223, 0.75);
   --ink-decor-opacity: 1;
 
   /* Fonts */
@@ -142,10 +142,19 @@ body::after {
 
 /* Ink background decoration — boost visibility in light mode */
 [data-theme="light"] .ink-bg-decor svg {
-  opacity: 0.05 !important;
+  opacity: 0.08 !important;
 }
 [data-theme="light"] .ink-bg-decor svg:first-child {
-  opacity: 0.06 !important;
+  opacity: 0.1 !important;
+}
+[data-theme="light"] .ink-bg-decor svg:nth-child(2) {
+  opacity: 0.09 !important;
+}
+[data-theme="light"] .ink-bg-decor svg:nth-child(3) {
+  opacity: 0.12 !important;
+}
+[data-theme="light"] .ink-bg-decor svg:nth-child(4) {
+  opacity: 0.08 !important;
 }
 
 /* Scrollbar — ink brush stroke feel */
