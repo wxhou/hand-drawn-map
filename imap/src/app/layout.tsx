@@ -28,9 +28,16 @@ const geistSans = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "GPT Image 2 Prompts - 探索 AI 图像生成的无限可能",
+  title: "墨辞 — GPT Image 2 提示词",
   description: "发现并学习最优质的 GPT Image 2 提示词，支持分类浏览、一键复制提示词，让 AI 图像生成变得更简单。",
-  keywords: ["GPT Image 2", "AI 图像", "提示词", "Prompt", "AI Art"],
+  keywords: ["GPT Image 2", "AI 图像", "提示词", "Prompt", "AI Art", "墨辞"],
+  icons: {
+    icon: [
+      { url: '/favicon-32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/favicon-16.png', sizes: '16x16', type: 'image/png' },
+    ],
+    apple: '/apple-touch-icon.png',
+  },
 };
 
 export default function RootLayout({
@@ -41,7 +48,6 @@ export default function RootLayout({
   return (
     <html lang="zh-CN" suppressHydrationWarning>
       <head>
-        <link rel="icon" href="/favicon.ico" />
         <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('imap-theme');var r=t==='system'||!t?(window.matchMedia('(prefers-color-scheme:light)').matches?'light':'dark'):(t==='light'?'light':'dark');document.documentElement.setAttribute('data-theme',r)}catch(e){}})()` }} />
       </head>
       <body

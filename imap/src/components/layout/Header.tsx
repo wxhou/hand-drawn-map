@@ -33,7 +33,13 @@ export function Header() {
       }}
     >
       <div className="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-3 group">
+        <Link href="/" className="flex items-center gap-2.5 group">
+          {/* Logo seal stamp */}
+          <svg width="28" height="28" viewBox="0 0 64 64" style={{ flexShrink: 0 }}>
+            <rect x="3" y="3" width="58" height="58" rx="4" fill="none" stroke="var(--accent)" strokeWidth="3.5" strokeLinecap="round"/>
+            <rect x="7" y="7" width="50" height="50" rx="2" fill="none" stroke="var(--accent)" strokeWidth="0.8" opacity="0.4"/>
+            <text x="32" y="42" textAnchor="middle" fontSize="26" fontFamily="var(--font-serif)" fontWeight="700" fill="var(--accent)">墨</text>
+          </svg>
           <span
             className="text-lg font-semibold"
             style={{
