@@ -138,18 +138,30 @@ body::after {
   background-size: 512px 512px;
 }
 
-/* Ink line decoration — slightly more visible in light mode */
+/* Ink line decoration — more visible in light mode */
 [data-theme="light"] .ink-line-decor path {
-  opacity: 0.08 !important;
+  opacity: 0.12 !important;
 }
 [data-theme="light"] .ink-line-decor path[style*="0.06"] {
-  opacity: 0.1 !important;
+  opacity: 0.18 !important;
 }
 [data-theme="light"] .ink-line-decor path[style*="0.04"] {
+  opacity: 0.12 !important;
+}
+[data-theme="light"] .ink-line-decor path[style*="0.05"] {
+  opacity: 0.15 !important;
+}
+[data-theme="light"] .ink-line-decor path[style*="0.035"] {
+  opacity: 0.1 !important;
+}
+[data-theme="light"] .ink-line-decor path[style*="0.03"] {
+  opacity: 0.08 !important;
+}
+[data-theme="light"] .ink-line-decor path[style*="0.025"] {
   opacity: 0.07 !important;
 }
 [data-theme="light"] .ink-line-decor g {
-  opacity: 0.08 !important;
+  opacity: 0.12 !important;
 }
 
 /* Scrollbar — ink brush stroke feel */
